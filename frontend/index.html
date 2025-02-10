@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 및 회원가입</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+    <div id="container">
+        <div id="A">
+        <iframe id="content-frame" src="login" width="100%" height="400px"></iframe>
+        </div>
+    
+        <div id="B">
+        <h2>고정된 B 화면</h2>
+        <p>이 영역은 그대로 유지됨</p>
+        </div>
+    </div>
+    
+    <script>
+        function showPage(page) {
+        document.getElementById("content-frame").src = page;
+        }
+    </script>
+</body>
+</html>

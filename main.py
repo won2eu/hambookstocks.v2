@@ -15,10 +15,10 @@ app.mount("/assets", StaticFiles(directory="frontend/assets"), name="assets")
 
 @app.get("/", response_class=RedirectResponse)
 async def root():
-    return RedirectResponse(url="/login")
+    return RedirectResponse(url="/index")
 
 @app.get("/{page_name}", response_class=HTMLResponse)
-async def get_page(page_name: str = "login"):
+async def get_page(page_name: str = "index"):
     page_path = f"frontend/{page_name}.html"
     if os.path.exists(page_path):
         with open(page_path, "r", encoding="utf-8") as file:
