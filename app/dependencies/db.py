@@ -1,7 +1,7 @@
 from sqlmodel import(
     SQLModel, Session, create_engine)
 
-DB_URL = 'sqlite:///blog.db'
+DB_URL = 'sqlite:///user.db'
 DB_CONN_ARGS = {
     "check_same_thread": False
 }
