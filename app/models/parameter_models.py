@@ -13,4 +13,4 @@ class AuthSignupReq(BaseModel):
 class AuthResp(BaseModel):
     message: str
     user: User
-    # access_token: str | None = None
+    access_token: str | None = None
