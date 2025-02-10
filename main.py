@@ -3,26 +3,54 @@ from app.models.parameter_models import *
 from pydantic import BaseModel
 from app.models.user_models import User
 from app.dependencies.db import *
+from app.dependencies.jwt_utils import JWTUtil
+from app.services.auth_service import AuthService
+
+
 
 app = FastAPI()
 
 create_db_and_table()
 
-@app.post('/auth/login')
-def login(req: AuthSigninReq,
-          db=Depends(get_db_session)):
-    
-    user = db.query(User).filter(User.login_id == req.login_id).first()
+#회원가입
+@app.post('/auth/register', response_model=AuthResp)
+def register(req: AuthSignupReq, db=Depends(get_db_session),
+             jwtUtil: JWTUtil = Depends(),
+             authService: AuthService = Depends()):
+    existing_user = db.query(User).filter(User.login_id == req.login_id).first()
 
-    if not user or user.pwd != req.pwd:
-        raise HTTPException(status_code=401, detail="Login failed")
+    if existing_user:
+        raise HTTPException(status_code=400, detail="ID already exists")
+
+    new_user = authService.signup(db,req.login_id, req.pwd, req.name)
+
+    if not new_user:
+        raise HTTPException(status_code=400, detail="not found")
     
     return AuthResp(
-        message="Login success",
-        user=user
-        # access_token=user.access_token
+        message= "User registered successfully",
+        user = new_user
     )
 
+
+#로그인
+@app.post('/auth/login')
+def login(req: AuthSigninReq,
+          db=Depends(get_db_session), jwtUtil: JWTUtil = Depends(),
+          authService: AuthService = Depends()):
+    
+    user = authService.signin(db,req.login_id,req.pwd)
+    if not user:
+        raise HTTPException(status_code=401, detail="Login failed")
+    
+    user.access_token = jwtUtil.create_token(user.model_dump())
+    return AuthResp(
+        message="로그인 되었습니다.",
+        user=user,
+        access_token=user.access_token
+    )
+
+#로그아웃
 @app.post('/auth/logout')
 def auth_logout():
     #토큰 삭제 로직 추가해야함 (프론트?)
