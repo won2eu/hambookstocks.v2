@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from app.models.user_models import User
 
 class AuthSigninReq(BaseModel):
     login_id: str
