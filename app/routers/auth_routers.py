@@ -6,13 +6,14 @@ from app.dependencies.db import *
 from app.dependencies.jwt_utils import JWTUtil
 from app.services.auth_service import AuthService
 
+
 router = APIRouter(
     prefix='/auth'
 )
 
 
 #회원가입
-@router.post('/auth/register', response_model=AuthResp)
+@router.post('/register', response_model=AuthResp)
 def register(req: AuthSignupReq, db=Depends(get_db_session),
              jwtUtil: JWTUtil = Depends(),
              authService: AuthService = Depends()):
@@ -33,7 +34,7 @@ def register(req: AuthSignupReq, db=Depends(get_db_session),
 
 
 #로그인
-@router.post('/auth/login')
+@router.post('/login')
 def login(req: AuthSigninReq,
           db=Depends(get_db_session), jwtUtil: JWTUtil = Depends(),
           authService: AuthService = Depends()):

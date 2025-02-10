@@ -6,10 +6,10 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
   
     const loginData = {
       login_id: loginId,
-      password: password,
+      pwd: password
     };
   
-    fetch('/auth/login', {
+    fetch('http://localhost:8000/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
+        if (data.message === "로그인 되었습니다.") {
           alert("로그인 성공!");
           window.location.href = 'dashboard.html';  // 대시보드 페이지로 리다이렉션
         } else {

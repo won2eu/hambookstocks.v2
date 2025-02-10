@@ -7,18 +7,18 @@ def get_today_high_low(symbol: str):
     try:
         ticker = yf.Ticker(symbol)
 
-        # ¿À´Ã ³¯Â¥
+        # ì˜¤ëŠ˜ ë‚ ì§œ
         today = date.today()
 
-        # ¿À´Ã ³¯Â¥ÀÇ µ¥ÀÌÅÍ °¡Á®¿À±â (½Ç½Ã°£ µ¥ÀÌÅÍ´Â 1ÀÏ ÀüºÎÅÍ)
+        # ì˜¤ëŠ˜ ë‚ ì§œì˜ ë°ì´í„° ê°€ì ¸ì˜¤ê¸° (ì‹¤ì‹œê°„ ë°ì´í„°ëŠ” 1ì¼ ì „ë¶€í„°)
         data = ticker.history(period="1d")
 
-        # µ¥ÀÌÅÍ°¡ ºñ¾îÀÖÀ¸¸é Àü³¯ µ¥ÀÌÅÍ °¡Á®¿À±â
+        # ë°ì´í„°ê°€ ë¹„ì–´ìˆìœ¼ë©´ ì „ë‚  ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
         if data.empty:
             yesterday = today - timedelta(days=1)
             data = ticker.history(period="1d", start=yesterday, end=today)
 
-        # ¿À´Ã ÃÖ°í°¡/ÃÖÀú°¡
+        # ì˜¤ëŠ˜ ìµœê³ ê°€/ìµœì €ê°€
         today_high = data['High'][-1]
         today_low = data['Low'][-1]
 

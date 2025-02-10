@@ -12,12 +12,12 @@ document.getElementById('signup-form').addEventListener('submit', function (e) {
     }
   
     const userData = {
-      username: username,
+      name: username,
       login_id: loginId,
-      password: password,
+      pwd: password
     };
   
-    fetch('/auth/signup', {
+    fetch('http://localhost:8000/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -26,9 +26,9 @@ document.getElementById('signup-form').addEventListener('submit', function (e) {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
+        if (data.message === "User registered successfully") {
           alert("회원가입 성공!");
-          window.location.href = 'login.html';  // 로그인 페이지로 리다이렉션
+          window.location.href = 'login';  // 로그인 페이지로 리다이렉션
         } else {
           alert("회원가입 실패: " + data.message);
         }
