@@ -20,7 +20,7 @@
     <!-- 헤더 -->
     <header class="main-header clearfix">
         <div class="logo">
-            <a href="/"><em>주식투자</em> 게임</a>
+            <a><em>주식투자</em> 게임</a>
         </div>
         <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
         <nav id="menu" class="main-nav">
@@ -62,12 +62,12 @@
                                                 <input name="name" type="text" class="form-control" id="name" placeholder="이름" required="">
                                             </fieldset>
                                         </div> -->
-                                        <div class="col-md-12">
+                                        <div id="div_id" class="col-md-12">
                                             <fieldset>
                                                 <input name="ID" type="text" class="form-control" id="ID" placeholder="아이디" required="">
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-12">
+                                        <div id="div_pwd" class="col-md-12">
                                             <fieldset>
                                                 <input name="password" type="password" class="form-control" id="password" placeholder="비밀번호" required="">
                                             </fieldset>
@@ -190,7 +190,10 @@
             alert("로그인 성공!");
             localStorage.setItem("token", result.access_token);  // JWT 토큰 저장
 
-            document.querySelector(".right-content").innerHTML = `<h3>${login_id}님, 환영합니다!</h3>`;
+            document.querySelector(".top-content").innerHTML = `<h6>${login_id}님, 환영합니다!</h6>`;
+            document.querySelector("#div_id").innerHTML = "";
+            document.querySelector("#div_pwd").innerHTML = "";
+            document.querySelector("#form-submit").innerHTML = `로그아웃`;
         } else {
             alert("로그인 실패: " + result.detail);
         }

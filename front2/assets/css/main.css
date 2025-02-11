@@ -77,6 +77,7 @@ th {
 
 .middle-upper-body, .middle-under-body {
   display: flex;
+  justify-content: center;
 }
 
 .middle-upper-right-body {
@@ -619,6 +620,23 @@ ul.list-justify > li {
 /********************
  * BUTTONS
  ********************/
+button {
+  width: 200px;
+  height: 100px;
+  margin: 10px;
+  color: white;
+  border-radius: 30px;
+}
+#buy {
+  background-color: #f65a5b;
+  border-color: #f65a5b;
+}
+ 
+#sell {
+  background-color: #0081c2;
+  border-color: #0081c2
+}
+
 .btn {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -669,6 +687,8 @@ ul.list-justify > li {
 fieldset[disabled] .btn {
   opacity: 0.4;
   filter: alpha(opacity=40); }
+
+
 
 /********************
  * PANELS
