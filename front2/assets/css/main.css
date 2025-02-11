@@ -45,7 +45,7 @@ th {
   margin-top: 120px;
   display: flex;
 }
-.left-body, .right-body {
+.right-body {
   width: 350px;
   height: 100%;
   display: flex;
@@ -53,14 +53,35 @@ th {
   align-items: center;
   font-size: 24px;
 }
+.left-body {
+  width: 400px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}
 .middle-body {
-  width: 515px;
+  width: 600px;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   font-size: 24px;
+}
+
+.middle-body .panel {
+  width: 550px;
+}
+
+.middle-upper-body, .middle-under-body {
+  display: flex;
+}
+
+.middle-upper-right-body {
+  display: flex;
+  flex-direction: column;
 }
 
 .copyright {
@@ -662,6 +683,7 @@ fieldset[disabled] .btn {
   background-color: #fff;
   margin-bottom: 30px;
   max-width: 100%; /* 부모 요소 크기를 넘지 않게 설정 */
+  height: 650px;
   max-height: 100%;
   box-sizing: border-box; /* 패딩과 보더가 너비에 포함되도록 설정 */
 }
@@ -842,15 +864,17 @@ ul.activity-list > li {
   margin-bottom: 30px;
   font-weight: 300; }
   .weekly-summary .number {
-    font-size: 36px; }
+    font-size: 30px; }
   .weekly-summary i {
     font-size: 16px;
     margin-left: 10px; }
   .weekly-summary .percentage {
     position: relative;
+    font-size: 20px;
     top: -7px; }
   .weekly-summary .info-label {
     display: block;
+    font-size: 15px;
     margin-bottom: 10px;
     font-weight: normal; }
 
