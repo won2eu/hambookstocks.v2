@@ -7,3 +7,4 @@ class User(SQLModel, table=True):
     pwd: str = Field(default=None, exclude=True)
     name: str
     access_token: str | None = None
+    balance: float = Field(default=0.0)
