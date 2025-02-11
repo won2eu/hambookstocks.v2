@@ -14,3 +14,8 @@ class AuthResp(BaseModel):
     message: str
     user: User
     access_token: str | None = None
+
+class RecordResp(BaseModel):
+    message: str
+    records: List[Record]
+    # access_token: str | None = None
