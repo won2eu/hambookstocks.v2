@@ -6,15 +6,13 @@ from app.dependencies.db import *
 from app.dependencies.jwt_utils import JWTUtil
 from app.services.auth_service import AuthService
 
-
 router = APIRouter(
     prefix='/auth'
 )
 
-
 #회원가입
 @router.post('/register', response_model=AuthResp)
-def register(req: AuthSignupReq, db=Depends(get_db_session),
+def register(req: AuthSignupReq, db=Depends(get_blog_db_session),
              jwtUtil: JWTUtil = Depends(),
              authService: AuthService = Depends()):
     existing_user = db.query(User).filter(User.login_id == req.login_id).first()
@@ -32,11 +30,10 @@ def register(req: AuthSignupReq, db=Depends(get_db_session),
         user = new_user
     )
 
-
 #로그인
 @router.post('/login')
 def login(req: AuthSigninReq,
-          db=Depends(get_db_session), jwtUtil: JWTUtil = Depends(),
+          db=Depends(get_blog_db_session), jwtUtil: JWTUtil = Depends(),
           authService: AuthService = Depends()):
     
     user = authService.signin(db,req.login_id,req.pwd)
@@ -51,7 +48,7 @@ def login(req: AuthSigninReq,
     )
 
 #로그아웃
-@router.post('/auth/logout')
+@router.post('/logout')
 def auth_logout():
     #토큰 삭제 로직 추가해야함 (프론트?)
     #로그아웃시 로그인 html로 이동

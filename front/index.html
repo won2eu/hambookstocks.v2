@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    
+    <title>주식투자게임</title>
+    
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/templatemo-grad-school.css">
+    <link rel="stylesheet" href="assets/css/owl.css">
+</head>
+
+<body>
+
+    <!-- 헤더 -->
+    <header class="main-header clearfix">
+        <div class="logo">
+            <a href="#"><em>주식투자</em> 게임</a>
+        </div>
+        <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
+        <nav id="menu" class="main-nav">
+            <ul class="main-menu">
+                <li><a href="signup">계정이 없다면 바로 *회원가입 !</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!-- 메인 배너 -->
+    <section class="section main-banner" id="top" data-section="section1">
+        <video autoplay muted loop id="bg-video">
+            <source src="assets/images/course-video.mp4" type="video/mp4" />
+        </video>
+
+        <div class="video-overlay header-text">
+            <div class="container">
+                <div class="row">
+                    <!-- 왼쪽 배너 콘텐츠 -->
+                    <div class="col-md-7">
+                        <div class="caption">
+                            <h2><em>주식투자</em> 게임</h2>
+                            <div class="main-button">
+                                <div class="scroll-to-section"><a href="#section2">게임 시작</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 오른쪽 로그인 폼 -->
+                    <div class="col-md-5">
+                        <section class="section coming-soon" data-section="section3">
+                            <div class="right-content">
+                                <div class="top-content">
+                                    <h6>지금 당장 로그인하여 <em>주식투자</em> 게임을 체험해보세요.</h6>
+                                </div>
+                                <form id="login-form" method="get">
+                                    <div class="row">
+                                        <!-- <div class="col-md-12">
+                                            <fieldset>
+                                                <input name="name" type="text" class="form-control" id="name" placeholder="이름" required="">
+                                            </fieldset>
+                                        </div> -->
+                                        <div class="col-md-12">
+                                            <fieldset>
+                                                <input name="ID" type="text" class="form-control" id="ID" placeholder="아이디" required="">
+                                            </fieldset>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <fieldset>
+                                                <input name="password" type="password" class="form-control" id="password" placeholder="비밀번호" required="">
+                                            </fieldset>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <fieldset>
+                                                <button type="submit" id="form-submit" class="button">로그인</button>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 명예의 전당 -->
+    <section class="section courses" data-section="section4"> 
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="section-heading">
+              <h2>명예의 전당</h2>
+            </div>
+          </div>
+          <div class="owl-carousel owl-theme">
+            <div class="item1">
+              <div class="down-content">
+                <h4>1등</h4>
+              </div>
+            </div>
+            <div class="item2">
+              <div class="down-content">
+                <h4>2등</h4>
+              </div>
+            </div>
+            <div class="item3">
+              <div class="down-content">
+                <h4>3등</h4>
+              </div>
+            </div>
+            <div class="item">
+              <div class="down-content">
+                <h4>4등</h4>
+              </div>
+            </div>
+            <div class="item">
+              <div class="down-content">
+                <h4>5등</h4>
+              </div>
+            </div>
+            <div class="item">
+              <div class="down-content">
+                <h4>6등</h4>
+              </div>
+            </div>
+            <div class="item">
+              <div class="down-content">
+                <h4>7등</h4>
+              </div>
+            </div>
+            <div class="item">
+              <div class="down-content">
+                <h4>8등</h4>
+              </div>
+            </div>
+            <div class="item">
+              <div class="down-content">
+                <h4>9등</h4>
+              </div>
+            </div>
+            <div class="item">
+              <div class="down-content">
+                <h4>10등</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p><i class="fa fa-copyright"></i> PROJECT BY 7 GROUP | 2025 BACK-END BOOTCAMP</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/owl-carousel.js"></script>
+    <script src="assets/js/video.js"></script>
+    <script src="assets/js/slick-slider.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <script>
+      document.getElementById("login-form").addEventListener("submit", async function (event) {
+        event.preventDefault();  // 기본 폼 제출 막기
+
+        const login_id = document.getElementById("ID").value;
+        const pwd = document.getElementById("password").value;
+
+        const response = await fetch("http://127.0.0.1:8000/auth/login", {  // FastAPI 로그인 엔드포인트
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ login_id, pwd })  // FastAPI에 JSON으로 데이터 전송
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert("로그인 성공!");
+            localStorage.setItem("token", result.access_token);  // JWT 토큰 저장
+
+            document.querySelector(".right-content").innerHTML = `<h3>${login_id}님, 환영합니다!</h3>`;
+        } else {
+            alert("로그인 실패: " + result.detail);
+        }
+    });
+    </script>
+</body>
+</html>
