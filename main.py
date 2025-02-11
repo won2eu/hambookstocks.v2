@@ -1,7 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from app.dependencies.db import *
-from app.routers import auth_routers
+from app.routers import auth_routers, record_routers
 
 import os
 from fastapi.responses import HTMLResponse, RedirectResponse
