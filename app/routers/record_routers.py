@@ -1,38 +1,41 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.models.parameter_models import *
-from app.models.record_model import Record
-from app.dependencies.db import *
+from app.models.user_models import User 
+from app.dependencies.db import get_blog_db_session 
 from sqlmodel import select, desc
 
 router = APIRouter(
-    prefix='/auth'
 )
 
-# @router.post('/postRecord')
-# def post_record(record: Record,db= Depends(get_record_db_session)):
-#     recordModel = Record()
-#     recordModel.id = record.id
-#     recordModel.login_id = record.login_id
-#     recordModel.profit_rate = record.profit_rate
+# 임시로 돈 주기
+@router.post('/record')
+def plus_balance(login_id: int, money: float, db=Depends(get_blog_db_session)):
+    user = db.exec(select(User).where(User.login_id == login_id)).first()
 
-#     db.add(recordModel)
-#     db.commit()
-#     db.refresh(recordModel)
-#     return{
-#         'result': True
-#     }
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     
+    # balance 업데이트
+    user.balance += money 
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return {"message": "Balance updated successfully", "user_id": user.id, "new_balance": user.balance}
+    
+
 # 명예의 전당
-@router.get('/record', response_model=RecordResp)
-def record(limit: int=5, db=Depends(get_record_db_session)):
-    records = db.exec(
-        select(Record).order_by(desc(Record.profit_rate)).limit(limit)
+@router.get('/record')
+def record(limit: int=5, db=Depends(get_blog_db_session)): 
+    users = db.exec(
+        select(User).order_by(desc(User.balance)).limit(limit)  
     ).all()
-    if not records:
+
+    if not users:
         raise HTTPException(status_code=404, detail="Not Found")
-    return RecordResp(message = "조회 성공",
-                      records = records
-    )
+    rankings = [
+        {"rank": idx + 1, "user_id": user.id, "login_id": user.login_id, "balance": user.balance}
+        for idx, user in enumerate(users)
+    ]
 
-
-# to do: 결과값 DB에 저장
+    return {"message": "조회 성공", "rankings": rankings}
