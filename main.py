@@ -40,3 +40,4 @@ async def get_page(page_name: str = "index"):
 
 
 app.include_router(auth_routers.router)
+app.include_router(record_routers.router)
