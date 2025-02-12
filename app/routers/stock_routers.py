@@ -3,6 +3,13 @@ import asyncio
 import websockets  # 한국투자증권 API WebSocket 연결을 위해 필요
 from app.services.stock_service import stockspurchase, get_approval
 from app.models.stock_model import StockPriceResponse
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+APP_KEY = os.getenv("APP_KEY")
+APP_SECRET = os.getenv("APP_SECRET")
 
 router = APIRouter()
 
@@ -31,8 +38,8 @@ async def websocket_stock_prices(websocket: WebSocket):
     try:
         async with websockets.connect("ws://ops.koreainvestment.com:21000", ping_interval=60) as websocket_connection:
             g_approval_key = get_approval(
-                "PSa3ipf9akG6hMx41Hzq1ALxMPBOTnJ0ogNy",
-                "6Sq3eROwWwdJYqku2HNefF3TOZVdR9zY8g51Xo2YGEt/r++qvdJ14m3O2NssObo04ou0OmcWXbzBlFpJGSNKXx7yxknsI2g8YJMEvOeZRFkZnkcKDkV7cbbhmxrPlQ3JEfFAkYSn8XFHz30ub/ZcYYrJFxBwZSuLO1IG5eyRdzevtbKZCuc="
+                APP_KEY,
+                APP_SECRET
             )  # API 인증키 발급
             tr_id = "H0STCNT0"
             
