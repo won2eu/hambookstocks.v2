@@ -7,7 +7,6 @@ from sqlmodel import select, desc
 router = APIRouter(
 )
 
-
 ### 임시로 돈 주기
 @router.post('/record')
 def plus_balance(login_id: str, money: float, db=Depends(get_db_session)):

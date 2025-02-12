@@ -172,34 +172,66 @@
     <script>
       document.getElementById("login-form").addEventListener("submit", async function (event) {
         event.preventDefault();  // 기본 폼 제출 막기
+        const loginButton = document.getElementById("form-submit")
+        if (loginButton.innerHTML === "로그인") {
+          const login_id = document.getElementById("ID").value;
+          const pwd = document.getElementById("password").value;
+          const response = await fetch("http://127.0.0.1:8000/auth/login", {  // FastAPI 로그인 엔드포인트
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ login_id, pwd })  // FastAPI에 JSON으로 데이터 전송
+          });
 
-        const login_id = document.getElementById("ID").value;
-        const pwd = document.getElementById("password").value;
+          const result = await response.json();
 
-        const resp_login = await fetch("http://127.0.0.1:8000/auth/login", {  // FastAPI 로그인 엔드포인트
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                // "Authorization": `Bearer ${localStorage.getItem("token")}`  // JWT 토큰 전송 - 로그인시 필요없음!!!
-            },
-            body: JSON.stringify({ login_id, pwd })  // FastAPI에 JSON으로 데이터 전송
-        });
+          if (response.ok) {
+              alert("로그인 성공!");
+              localStorage.setItem("token", result.access_token);  // JWT 토큰 저장
 
-        const result = await resp_login.json();
-
-        if (resp_login.ok) {
-            alert("로그인 성공!");
-            localStorage.setItem("token", result.access_token);  // JWT 토큰 저장
-
-            document.querySelector(".top-content").innerHTML = `<h6>${login_id}님, 환영합니다!</h6>`;
-            document.querySelector("#div_id").innerHTML = "";
-            document.querySelector("#div_pwd").innerHTML = "";
-            document.querySelector("#form-submit").innerHTML = `로그아웃`;
-        } else {
-            alert("로그인 실패: " + result.detail);
+              document.querySelector(".top-content").innerHTML = `<h6>${login_id}님, 환영합니다!</h6>`;
+              document.querySelector("#div_id").style.display = "none";
+              document.querySelector("#div_pwd").style.display = "none";
+              document.querySelector("#form-submit").innerHTML = `로그아웃`;
+          } else {
+              alert("로그인 실패: " + result.detail);
+          }
         }
+
+        else if (loginButton.innerHTML === "로그아웃") {
+          console.log(1111)
+          const token = localStorage.getItem("token");
+
+          if (token) {
+              const response = await fetch("http://127.0.0.1:8000/auth/logout", {  // FastAPI 로그아웃 엔드포인트
+                  method: "POST",
+                  headers: {
+                      "Authorization": `Bearer ${token}`
+                  }
+              });
+
+              const data = await response.json();
+              alert(data.message);  // "로그아웃 되었습니다."
+              
+              // 로그아웃 후 토큰 삭제
+              localStorage.removeItem("token");
+
+              document.getElementById("ID").value = "";  // ID 비우기
+              document.getElementById("password").value = "";  // 비밀번호 비우기
+
+              // 로그아웃 후 버튼 숨기기
+              document.querySelector("#form-submit").innerHTML = `로그인`;  // 로그인 버튼으로 돌아가기
+              document.querySelector(".top-content").innerHTML = `<h6>지금 당장 로그인하여 주식투자 게임을 체험해보세요.</h6>`;
+              document.querySelector("#div_id").style.display = "block";
+              document.querySelector("#div_pwd").style.display = "block";
+          } else {
+              alert("로그인 상태가 아닙니다.");
+          }
+      };
     });
 
+    
     window.onload = function() {
       fetch('/record')
         .then(response => response.json())
@@ -214,7 +246,6 @@
       });
     };
 
-    
     </script>
 </body>
 </html>

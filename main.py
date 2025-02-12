@@ -1,7 +1,8 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from app.dependencies.db import *
-from app.routers import auth_routers, record_routers, mystocks_routers, stock_routers
+from app.routers import auth_routers, record_routers, mystocks_routers
+#, stock_routers
 
 import os
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -29,7 +30,7 @@ app.mount("/vendor", StaticFiles(directory="front/vendor"), name="vendor")
 app.include_router(mystocks_routers.router)
 app.include_router(auth_routers.router)
 app.include_router(record_routers.router)
-app.include_router(stock_routers.router)
+#app.include_router(stock_routers.router)
 
 @app.get("/", response_class=RedirectResponse)
 async def root():

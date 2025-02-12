@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from app.models.parameter_models import *
 from pydantic import BaseModel
 from app.models.user_models import User
@@ -52,9 +52,19 @@ def login(req: AuthSigninReq,
 
 #로그아웃
 @router.post('/logout')
-def auth_logout():
-    #토큰 삭제 로직 추가해야함 (프론트?)
-    #로그아웃시 로그인 html로 이동
-    return {
-        "message" : "로그아웃 되었습니다."
-    }
+def auth_logout(db: Session=Depends(get_db_session), authorization: str=Header(None)):  # 헤더에서 토큰을 받음
+    if not authorization:
+        raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
+
+    token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
+    
+    # table에 해당 토큰이 있는지 확인
+    user = db.query(User).filter(User.access_token == token).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
+
+    # 현재 유저의 토큰을 삭제 (NULL 처리)
+    db.query(User).filter(User.id == user.id).update({"access_token": None})
+    db.commit()
+
+    return {"message": "로그아웃 되었습니다."}
