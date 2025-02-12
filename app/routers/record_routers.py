@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.models.parameter_models import *
 from app.models.user_models import User 
-from app.dependencies.db import get_blog_db_session 
+from app.dependencies.db import get_db_session 
 from sqlmodel import select, desc
 
 router = APIRouter(
@@ -9,7 +9,7 @@ router = APIRouter(
 
 # 임시로 돈 주기
 @router.post('/record')
-def plus_balance(login_id: int, money: float, db=Depends(get_blog_db_session)):
+def plus_balance(login_id: int, money: float, db=Depends(get_db_session)):
     user = db.exec(select(User).where(User.login_id == login_id)).first()
 
     if not user:
@@ -26,7 +26,7 @@ def plus_balance(login_id: int, money: float, db=Depends(get_blog_db_session)):
 
 # 명예의 전당
 @router.get('/record')
-def record(limit: int=5, db=Depends(get_blog_db_session)): 
+def record(limit: int=5, db=Depends(get_db_session)): 
     users = db.exec(
         select(User).order_by(desc(User.balance)).limit(limit)  
     ).all()

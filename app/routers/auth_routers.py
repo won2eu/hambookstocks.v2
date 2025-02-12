@@ -12,7 +12,7 @@ router = APIRouter(
 
 #회원가입
 @router.post('/register', response_model=AuthResp)
-def register(req: AuthSignupReq, db=Depends(get_blog_db_session),
+def register(req: AuthSignupReq, db=Depends(get_db_session),
              jwtUtil: JWTUtil = Depends(),
              authService: AuthService = Depends()):
     existing_user = db.query(User).filter(User.login_id == req.login_id).first()
@@ -33,7 +33,7 @@ def register(req: AuthSignupReq, db=Depends(get_blog_db_session),
 #로그인
 @router.post('/login')
 def login(req: AuthSigninReq,
-          db=Depends(get_blog_db_session), jwtUtil: JWTUtil = Depends(),
+          db=Depends(get_db_session), jwtUtil: JWTUtil = Depends(),
           authService: AuthService = Depends()):
     
     user = authService.signin(db,req.login_id,req.pwd)
