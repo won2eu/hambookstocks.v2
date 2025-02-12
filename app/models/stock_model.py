@@ -1,9 +1,6 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
-@dataclass
-class StockInfo:
-    symbol: str
-    current_price: float
-    today_high: float
-    today_low: float
-    volume: int
+class StockPriceResponse(BaseModel):
+    stock_code: str
+    timestamp: str
+    current_price: str
