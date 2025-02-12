@@ -3,6 +3,7 @@
 
 <head>
     <title>햄북STOCKS</title>
+    <base href="/front2/">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
@@ -22,8 +23,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span>더 보기</span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#"><span>로그아웃</span></a></li>
-                                <li><a href="#"><span>포기하기</span></a></li>
+                                <li><a><span>로그아웃</span></a></li>
+                                <li><a id="give-up"><span>포기하기</span></a></li>
                             </ul>
                         </li>
                     </ul>
@@ -168,7 +169,7 @@
             });
 
             if (response.ok) {
-                window.location.href = '/';  // 로그인 페이지로 리다이렉트
+                window.location.href = '/front/index';  // 로그인 페이지로 리다이렉트
             } else {
                 // 오류 처리
                 alert("GG 실패");

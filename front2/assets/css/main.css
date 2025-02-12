@@ -90,6 +90,11 @@ img {
   color:#f8f9fa;
 }
 
+.navbar-nav .dropdown-toggle,
+.navbar-nav .dropdown-menu li a{
+  cursor: pointer;
+}
+
 .navbar .nav {
   display: flex;
   align-items: center;

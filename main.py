@@ -24,8 +24,10 @@ app.add_middleware(
 )
 
 # 프론트 연결
-app.mount("/assets", StaticFiles(directory="front/assets"), name="assets")
-app.mount("/vendor", StaticFiles(directory="front/vendor"), name="vendor")
+app.mount("/front/assets", StaticFiles(directory="front/assets"), name="assets")
+app.mount("/front/vendor", StaticFiles(directory="front/vendor"), name="vendor")
+app.mount("/front2/assets", StaticFiles(directory="front2/assets"), name="assets")
+
 
 app.include_router(mystocks_routers.router)
 app.include_router(auth_routers.router)
@@ -34,9 +36,9 @@ app.include_router(record_routers.router)
 
 @app.get("/", response_class=RedirectResponse)
 async def root():
-    return RedirectResponse(url="/index")
+    return RedirectResponse(url="/front/index")
 
-@app.get("/{page_name}", response_class=HTMLResponse)
+@app.get("/front/{page_name}", response_class=HTMLResponse)
 async def get_page(page_name: str = "index"):
     page_path = f"front/{page_name}.html"
     if os.path.exists(page_path):
@@ -45,4 +47,15 @@ async def get_page(page_name: str = "index"):
         return HTMLResponse(content=content)
     else:
         return HTMLResponse(content="페이지를 찾을 수 없습니다.", status_code=404)
+
+@app.get("/front2/{page_name}", response_class=HTMLResponse)
+async def get_page(page_name: str = "index"):
+    page_path = f"front2/{page_name}.html"
+    if os.path.exists(page_path):
+        with open(page_path, "r", encoding="utf-8") as file:
+            content = file.read()
+        return HTMLResponse(content=content)
+    else:
+        return HTMLResponse(content="페이지를 찾을 수 없습니다.", status_code=404)
+
 
