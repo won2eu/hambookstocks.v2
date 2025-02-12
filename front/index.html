@@ -231,6 +231,21 @@
       };
     });
 
+    
+    window.onload = function() {
+      fetch('/record')
+        .then(response => response.json())
+        .then(data => {
+          // 명예의전당 데이터 업로드
+          for (let i = 0; i < data["rankings"].length; i++) {
+            document.querySelector(`.item${i+1} .down-content h4`).innerHTML = `${i+1}등 : ${data["rankings"][i].login_id} <br> ${data["rankings"][i].balance}원`;
+          }
+        })
+      document.addEventListener("scroll", function () {
+        updateRankings();
+      });
+    };
+
     </script>
 </body>
 </html>

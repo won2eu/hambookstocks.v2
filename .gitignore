@@ -4,3 +4,4 @@ __pycache__/
 *.pyo
 blog.db
 record.db
+.env
