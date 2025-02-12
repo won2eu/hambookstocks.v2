@@ -1,13 +1,15 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from app.dependencies.db import *
-from app.routers import auth_routers
+from app.routers import auth_routers, record_routers, mystocks_routers, stock_routers
 
 import os
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 create_db_and_table()
+
+put_temp_data() # 임시 데이터 추가 - 나중에 삭제
 
 app = FastAPI()
 
@@ -24,6 +26,11 @@ app.add_middleware(
 app.mount("/assets", StaticFiles(directory="front/assets"), name="assets")
 app.mount("/vendor", StaticFiles(directory="front/vendor"), name="vendor")
 
+app.include_router(mystocks_routers.router)
+app.include_router(auth_routers.router)
+app.include_router(record_routers.router)
+app.include_router(stock_routers.router)
+
 @app.get("/", response_class=RedirectResponse)
 async def root():
     return RedirectResponse(url="/index")
@@ -38,6 +45,3 @@ async def get_page(page_name: str = "index"):
     else:
         return HTMLResponse(content="페이지를 찾을 수 없습니다.", status_code=404)
 
-
-app.include_router(auth_routers.router)
-app.include_router(record_routers.router)

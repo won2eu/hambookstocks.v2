@@ -39,12 +39,51 @@ th {
   margin-bottom: 30px;
   font-weight: 300; }
 
-footer {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  padding-top: 15px;
-  padding-bottom: 10px; }
+#body {
+  width: 100vw;
+  height: 100vh;
+  margin-top: 120px;
+  display: flex;
+}
+.right-body {
+  width: 350px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}
+.left-body {
+  width: 400px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}
+.middle-body {
+  width: 600px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}
+
+.middle-body .panel {
+  width: 550px;
+}
+
+.middle-upper-body, .middle-under-body {
+  display: flex;
+  justify-content: center;
+}
+
+.middle-upper-right-body {
+  display: flex;
+  flex-direction: column;
+}
 
 .copyright {
   margin-bottom: 0;
@@ -178,7 +217,7 @@ html.fullscreen-bg #wrapper {
     background-color: #f8f8f8; }
   .navbar-default .brand {
     float: left;
-    padding: 30px 39px;
+    padding: 20px 20px;
     background-color: #fff; }
   @media screen and (max-width: 1024px) {
     .navbar-default .brand {
@@ -287,7 +326,9 @@ html.fullscreen-bg #wrapper {
 
 @media screen and (min-width: 768px) {
   .navbar-nav.navbar-right {
-    margin-right: 0; } }
+    margin-right: 0; 
+    margin-top: -100px
+    ;} }
 
 @media screen and (max-width: 767px) {
   .navbar-nav {
@@ -579,6 +620,23 @@ ul.list-justify > li {
 /********************
  * BUTTONS
  ********************/
+button {
+  width: 200px;
+  height: 100px;
+  margin: 10px;
+  color: white;
+  border-radius: 30px;
+}
+#buy {
+  background-color: #f65a5b;
+  border-color: #f65a5b;
+}
+ 
+#sell {
+  background-color: #0081c2;
+  border-color: #0081c2
+}
+
 .btn {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -630,6 +688,8 @@ fieldset[disabled] .btn {
   opacity: 0.4;
   filter: alpha(opacity=40); }
 
+
+
 /********************
  * PANELS
  ********************/
@@ -641,7 +701,12 @@ fieldset[disabled] .btn {
   -webkit-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   background-color: #fff;
-  margin-bottom: 30px; }
+  margin-bottom: 30px;
+  max-width: 100%; /* 부모 요소 크기를 넘지 않게 설정 */
+  height: 650px;
+  max-height: 100%;
+  box-sizing: border-box; /* 패딩과 보더가 너비에 포함되도록 설정 */
+}
   .panel .panel-heading,
   .panel .panel-body,
   .panel .panel-footer {
@@ -689,6 +754,10 @@ fieldset[disabled] .btn {
       color: #8D99A8; }
   .panel.panel-scrolling .btn-bottom {
     margin-bottom: 30px; }
+  .table {
+    max-width: 100%; /* 부모 요소 크기를 넘지 않게 설정 */
+    box-sizing: border-box; /* 패딩과 보더가 너비에 포함되도록 설정 */
+  }
   .panel .table > thead > tr > td:first-child,
   .panel .table > thead > tr > th:first-child,
   .panel .table > tbody > tr > td:first-child,
@@ -815,15 +884,17 @@ ul.activity-list > li {
   margin-bottom: 30px;
   font-weight: 300; }
   .weekly-summary .number {
-    font-size: 36px; }
+    font-size: 30px; }
   .weekly-summary i {
     font-size: 16px;
     margin-left: 10px; }
   .weekly-summary .percentage {
     position: relative;
+    font-size: 20px;
     top: -7px; }
   .weekly-summary .info-label {
     display: block;
+    font-size: 15px;
     margin-bottom: 10px;
     font-weight: normal; }
 

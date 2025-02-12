@@ -6,13 +6,14 @@ from app.dependencies.db import *
 from app.dependencies.jwt_utils import JWTUtil
 from app.services.auth_service import AuthService
 
+
 router = APIRouter(
     prefix='/auth'
 )
 
 #회원가입
 @router.post('/register', response_model=AuthResp)
-def register(req: AuthSignupReq, db=Depends(get_blog_db_session),
+def register(req: AuthSignupReq, db=Depends(get_db_session),
              jwtUtil: JWTUtil = Depends(),
              authService: AuthService = Depends()):
     existing_user = db.query(User).filter(User.login_id == req.login_id).first()
@@ -33,7 +34,7 @@ def register(req: AuthSignupReq, db=Depends(get_blog_db_session),
 #로그인
 @router.post('/login')
 def login(req: AuthSigninReq,
-          db=Depends(get_blog_db_session), jwtUtil: JWTUtil = Depends(),
+          db=Depends(get_db_session), jwtUtil: JWTUtil = Depends(),
           authService: AuthService = Depends()):
     
     user = authService.signin(db,req.login_id,req.pwd)
@@ -41,6 +42,8 @@ def login(req: AuthSigninReq,
         raise HTTPException(status_code=401, detail="Login failed")
     
     user.access_token = jwtUtil.create_token(user.model_dump())
+    db.query(User).filter(User.id == user.id).update({"access_token": user.access_token})
+    db.commit()
     return AuthResp(
         message="로그인 되었습니다.",
         user=user,
