@@ -27,6 +27,8 @@ app.mount("/assets", StaticFiles(directory="front/assets"), name="assets")
 app.mount("/vendor", StaticFiles(directory="front/vendor"), name="vendor")
 
 app.include_router(mystocks_routers.router)
+app.include_router(auth_routers.router)
+app.include_router(record_routers.router)
 
 @app.get("/", response_class=RedirectResponse)
 async def root():
@@ -41,6 +43,3 @@ async def get_page(page_name: str = "index"):
         return HTMLResponse(content=content)
     else:
         return HTMLResponse(content="페이지를 찾을 수 없습니다.", status_code=404)
-
-app.include_router(auth_routers.router)
-app.include_router(record_routers.router)
