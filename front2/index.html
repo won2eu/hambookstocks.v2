@@ -223,6 +223,24 @@
 	<script src="assets/vendor/chartist/js/chartist.min.js"></script>
 	<script src="assets/scripts/klorofil-common.js"></script>
 	<script>
+
+    async function gg(){
+        const token = localStorage.getItem("access_token");  // 예: 로컬스토리지에서 토큰 가져오기
+        const reponse = await fetch('/gg', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if (response.ok) {
+            window.location.href = '/';  // 로그인 페이지로 리다이렉트
+        } else {
+            // 오류 처리
+            alert("GG 실패");
+        }
+    }
+
 	$(function() {
 		var data, options;
 
