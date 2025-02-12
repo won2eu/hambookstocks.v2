@@ -8,6 +8,8 @@ import time
 from sqlmodel import Session, select
 from app.models.user_models import User
 
+BALANCE = 1000000
+
 class AuthService:
     def get_hashed_pwd(self, pwd:str) -> str:
         encoded_pwd = pwd.encode('utf-8')
@@ -26,7 +28,7 @@ class AuthService:
         try:
             hashed_pwd = self.get_hashed_pwd(pwd)
 
-            user = User(login_id=login_id, pwd=hashed_pwd, name=name)
+            user = User(login_id=login_id, pwd=hashed_pwd, name=name, balance=BALANCE)
             db.add(user)
             db.commit()
             db.refresh(user)
