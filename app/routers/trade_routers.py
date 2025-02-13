@@ -62,14 +62,14 @@ def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authoriz
 def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: str = Header(None)):
 
     '''토큰인증'''
+
     if not authorization:
         raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
+    token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
     #table에 해당 토큰이 있는지 확인
     user = db.query(User).filter(User.access_token == token).first()
     if not user:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
-    #token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
-
     '''mystocks db의 내 보유주식 수량 차감'''
     # 보유주식 확인
     mystock = db.query(MyStocks).filter(
