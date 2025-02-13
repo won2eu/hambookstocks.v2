@@ -109,14 +109,33 @@
                                     <tr>
                                         <th>주식명</th>
                                         <th>현재가</th>
-                                        <th>수량</th>
+                                        <th>갯수</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr><td><a href="#">.</a></td><td>3</td><td>5</td></tr>
-                            
+                                <tbody id="my-stock-table">
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
+                                    <tr><td></td><td class="price-cell">-</td><td class="quantity-cell">-</td></tr>
                                 </tbody>
-                            </table>
+                            </table>                            
+                            
                         </div>
                     </div>
                 </div>
@@ -152,8 +171,9 @@
             }
         });
         </script>
+
         <script>
-            let stockPrices = {}; // 기존 주식 데이터를 저장할 객체
+            window.stockPrices = {}; // 기존 주식 데이터를 저장할 객체
 
             const socket = new WebSocket("ws://localhost:8000/ws/stocks"); //웹소켓 연결
 
@@ -179,6 +199,7 @@
                     });
 
                     updateStockTable(); // UI 업데이트
+                    update_current_price_MyStockTable(); // my-stock-table 업데이트
                 } catch (error) {
                     console.error("❌ 데이터 처리 오류:", error);
                 }
@@ -216,7 +237,133 @@
                     }
                 }
             }
+            function update_current_price_MyStockTable() {
+                const myStockTable = document.getElementById("my-stock-table");
+                if (!myStockTable) {
+                    console.error("❌ my-stock-table 요소를 찾을 수 없습니다.");
+                    return;
+                }
+
+                const myStockRows = myStockTable.getElementsByTagName("tr");
+                const stockTable = document.getElementById("stock-table-body");
+
+                if (!stockTable) {
+                    console.error("❌ stock-table-body 요소를 찾을 수 없습니다.");
+                    return;
+                }
+
+                // 📌 [STEP 1] 보유 주식 목록 가져오기 (mystocks API에서 받은 데이터 사용)
+                const ownedStocks = new Set(); // 내가 가진 주식 코드 저장
+                myStockRows.forEach(row => {
+                    const stockNameCell = row.cells[0]; // 첫 번째 컬럼 (주식명)
+                    const stockName = stockNameCell.textContent.trim();
+                    if (stockName) {
+                        ownedStocks.add(stockName); // 보유한 주식 목록 추가
+                    }
+                });
+
+                // 📌 [STEP 2] stock-table-body에서 주식 코드 ↔ 주식 이름 매핑
+                const stockMap = {};
+                const stockRows = stockTable.getElementsByTagName("tr");
+
+                for (let row of stockRows) {
+                    const stockCode = row.cells[0].textContent.trim();
+                    const stockName = row.cells[1].textContent.trim();
+                    stockMap[stockCode] = stockName;
+                }
+
+                // 📌 [STEP 3] 보유 주식만 my-stock-table에 실시간 가격 업데이트
+                for (let row of myStockRows) {
+                    const stockNameCell = row.cells[0]; // 첫 번째 컬럼 (주식명)
+                    const stockPriceCell = row.cells[1]; // 두 번째 컬럼 (현재가)
+
+                    const stockName = stockNameCell.textContent.trim();
+
+                    if (ownedStocks.has(stockName)) { // 내가 가진 주식인지 확인
+                        for (let stockCode in stockMap) {
+                            if (stockMap[stockCode] === stockName && stockCode in stockPrices) {
+                                stockPriceCell.textContent = stockPrices[stockCode]; // 현재가 업데이트
+                            }
+            }
+        }
+    }
+}
+        </script>
+
+        <script>
+            async function fetchMyStocks() {
+                const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰 가져오기
+                if (!token) {
+                    console.error("❌ 토큰이 없습니다.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/mystocks', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log("📊 나의 주식 데이터:", data.mystocks);
+
+                    update_quantity_MyStockTable(data.mystocks);
+                } catch (error) {
+                    console.error("❌ API 요청 실패:", error);
+                }
+            }
+
+            function update_quantity_MyStockTable(myStocks) {
+                const stockTable = document.getElementById("stock-table-body");
+                const myStockTable = document.getElementById("my-stock-table");
+
+                if (!stockTable || !myStockTable) {
+                    console.error("❌ 테이블 요소를 찾을 수 없음.");
+                    return;
+                }
+
+                // 주식 코드 → 주식 이름 매핑
+                const stockMap = {};
+                const stockRows = stockTable.getElementsByTagName("tr");
+                for (let row of stockRows) {
+                    const stockCode = row.cells[0].textContent.trim();
+                    const stockName = row.cells[1].textContent.trim();
+                    stockMap[stockCode] = stockName;
+                }
+
+                // 테이블 행을 돌면서 업데이트
+                const rows = myStockTable.getElementsByTagName("tr");
+                let index = 0;
+
+                myStocks.forEach(stock => {
+                    if (index >= rows.length) return; // 빈 칸보다 데이터가 많아지면 무시
+
+                    const stockCode = stock.stock_code;
+                    const quantity = stock.quantity;
+
+                    if (stockMap[stockCode]) {
+                        const cells = rows[index].getElementsByTagName("td");
+                        cells[0].textContent = stockMap[stockCode]; // 주식 이름 설정
+                        cells[2].textContent = quantity; // 수량 설정
+                        index++;
+                    }
+                });
+            }
+
+            
+
+            // 페이지 로드 시 API 호출
+            document.addEventListener("DOMContentLoaded", fetchMyStocks);
+        </script>
+        <script>
 
         </script>
+
 </body>
 </html>
