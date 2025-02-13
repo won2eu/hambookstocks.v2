@@ -43,7 +43,7 @@ def login(req: AuthSigninReq,
         raise HTTPException(status_code=401, detail="Login failed")
     
     user.access_token = jwtUtil.create_token(user.model_dump())
-    db.query(User).filter(User.id == user.id).update({"access_token": user.access_token})
+    db.query(User).filter(User.login_id == user.login_id).update({"access_token": user.access_token})
     db.commit()
     return AuthResp(
         message="로그인 되었습니다.",
