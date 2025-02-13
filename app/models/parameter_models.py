@@ -16,7 +16,8 @@ class AuthResp(BaseModel):
     user: User
     access_token: str | None = None
 
-# class RecordResp(BaseModel):
-#     message: str
-#     records: List[Record]
-#     # access_token: str | None = None
+class stock_to_buy(BaseModel): #req 클래스
+    login_id : str
+    stock_code: int
+    stock_price: int | None = None
+    quantity: int

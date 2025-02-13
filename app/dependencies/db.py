@@ -18,14 +18,4 @@ def get_db_session():
 def create_db_and_table():
     SQLModel.metadata.create_all(DB_ENGINE)
 
-def put_temp_data():
-    db = DB_ENGINE
-    with Session(db) as session:
-        session.exec(text("DELETE FROM MyStocks"))
-        session.exec(text("INSERT INTO MyStocks (login_id, quantity, stock_code, bought_price) VALUES ('id1', 10, '005930', 80000)"))
-        session.exec(text("INSERT INTO MyStocks (login_id, quantity, stock_code, bought_price) VALUES ('jin', 5, '000660', 60000)"))
-        session.exec(text("INSERT INTO MyStocks (login_id, quantity, stock_code, bought_price) VALUES ('jin', 7, '005930', 20000)"))
-
-        session.commit()
-
 
