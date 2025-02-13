@@ -173,7 +173,7 @@
       document.getElementById("game-start").addEventListener("click", async function(event) {
         const token = localStorage.getItem("token");
         if (token) {
-          const response = await fetch("http://127.0.0.1:8000/auth/logout", {  // FastAPI 로그아웃 엔드포인트
+          const response = await fetch("http://127.0.0.1:8000/auth/check-token", {  // FastAPI 로그아웃 엔드포인트
               method: "POST",
               headers: {
                   "Authorization": `Bearer ${token}`
