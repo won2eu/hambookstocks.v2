@@ -18,6 +18,12 @@ class AuthResp(BaseModel):
 
 class stock_to_buy(BaseModel): #req 클래스
     login_id : str
-    stock_code: int
+    stock_code: str
     stock_price: int | None = None
     quantity: int
+
+class SellStockReq(BaseModel):
+    stock_code: str     
+    quantity: int      
+    access_token: str
+    current_price: int
