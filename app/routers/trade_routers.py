@@ -8,34 +8,34 @@ from app.models.parameter_models import stock_to_buy, SellStockReq
 router = APIRouter(
     prefix = '/trade'
 )
-class buyResp(): #ì‘ë‹µëª¨ë¸
+class buyResp(): #ÀÀ´ä¸ğµ¨
     login_id: str
     access_token: str
     stock_code : int
     quantity: int
 
-@router.post("/buy") #req: ìˆ˜ëŸ‰, ê¸ˆì•¡, ì£¼ì‹ ì½”ë“œ, 
+@router.post("/buy") #req: ¼ö·®, ±İ¾×, ÁÖ½Ä ÄÚµå, 
 def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authorization: str =Header(None)):
 
     if not authorization:
-        raise HTTPException(status_code=401, detail="ë¡œê·¸ì¸í•˜ì…”ì•¼ í•©ë‹ˆë‹¤.")
+        raise HTTPException(status_code=401, detail="·Î±×ÀÎÇÏ¼Å¾ß ÇÕ´Ï´Ù.")
     
     token = authorization.split(" ")[1]
     user = db.query(User).filter(User.access_token == token).first()
     if not user:
-        raise HTTPException(status_code=401, detail= "ìœ íš¨í•˜ì§€ ì•Šì€ í† í°ì…ë‹ˆë‹¤")
+        raise HTTPException(status_code=401, detail= "À¯È¿ÇÏÁö ¾ÊÀº ÅäÅ«ÀÔ´Ï´Ù")
     
-    # í† í° ì¸ì¦ì€ ë
-    # 2. ëˆì´ ìˆëŠ”ì§€ ì—†ëŠ”ì§€ í™•ì¸í•˜ìì
+    # ÅäÅ« ÀÎÁõÀº ³¡
+    # 2. µ·ÀÌ ÀÖ´ÂÁö ¾ø´ÂÁö È®ÀÎÇÏÀÚÀÚ
     total_price = req.stock_price * req.quantity
     if user.balance < total_price:
-        raise HTTPException(status_code=400, detail="ì”ì•¡ì´ ë¶€ì¡±í•©ë‹ˆë‹¤.")
+        raise HTTPException(status_code=400, detail="ÀÜ¾×ÀÌ ºÎÁ·ÇÕ´Ï´Ù.")
     
-    # ëˆì´ ìˆìœ¼ë©´ Userì˜ ì‚° ê°€ê²©ë§Œí¼ ëˆì„ ì¤„ì´ê³ 
+    # µ·ÀÌ ÀÖÀ¸¸é UserÀÇ »ê °¡°İ¸¸Å­ µ·À» ÁÙÀÌ°í
 
     change = user.balance - total_price
     db.query(User).filter(User.id == user.id).update({"balance": change})
-    #ì”ëˆìœ¼ë¡œ ìƒˆë¡œ ì—…ë°ì´íŠ¸í•œ í›„ì—
+    #ÀÜµ·À¸·Î »õ·Î ¾÷µ¥ÀÌÆ®ÇÑ ÈÄ¿¡
 
     existing_stock = db.query(MyStocks).filter(MyStocks.stock_code == req.stock_code).first()
 
@@ -45,7 +45,7 @@ def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authoriz
         new_avg_price = (total_price + existing_stock.avg_price*existing_stock.quantity) / (req.quantity + existing_stock.quantity)
         db.query(MyStocks).filter(MyStocks.stock_code == req.stock_code).update({"avg_price": new_avg_price})
         db.commit()
-        #DBì— ì£¼ì‹ì„ ì¶”ê°€í•´ì¤€ë‹¤
+        #DB¿¡ ÁÖ½ÄÀ» Ãß°¡ÇØÁØ´Ù
 
     else:
         new_stock = MyStocks(
@@ -58,7 +58,7 @@ def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authoriz
         db.add(new_stock)
     db.commit()
     
-    return {"msg": "êµ¬ë§¤ ì™„ë£Œ"}
+    return {"msg": "±¸¸Å ¿Ï·á"}
 
 
 
@@ -66,20 +66,20 @@ def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authoriz
 @router.post('/sell')
 def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: str = Header(None)):
 
-    '''í† í°ì¸ì¦'''
+    '''ÅäÅ«ÀÎÁõ'''
 
     
     if not authorization:
-        raise HTTPException(status_code=401, detail="ì¸ì¦ í† í°ì´ í•„ìš”í•©ë‹ˆë‹¤.")
-    token = authorization.split(" ")[1]  # "Bearer <í† í°>"ì—ì„œ í† í°ë§Œ ì¶”ì¶œ
-    #tableì— í•´ë‹¹ í† í°ì´ ìˆëŠ”ì§€ í™•ì¸
+        raise HTTPException(status_code=401, detail="ÀÎÁõ ÅäÅ«ÀÌ ÇÊ¿äÇÕ´Ï´Ù.")
+    token = authorization.split(" ")[1]  # "Bearer <ÅäÅ«>"¿¡¼­ ÅäÅ«¸¸ ÃßÃâ
+    #table¿¡ ÇØ´ç ÅäÅ«ÀÌ ÀÖ´ÂÁö È®ÀÎ
     user = db.query(User).filter(User.access_token == token).first()
     if not user:
-        raise HTTPException(status_code=401, detail="ìœ íš¨í•˜ì§€ ì•Šì€ í† í°ì…ë‹ˆë‹¤.")
+        raise HTTPException(status_code=401, detail="À¯È¿ÇÏÁö ¾ÊÀº ÅäÅ«ÀÔ´Ï´Ù.")
     
 
-    '''mystocks dbì˜ ë‚´ ë³´ìœ ì£¼ì‹ ìˆ˜ëŸ‰ ì°¨ê°'''
-    # ë³´ìœ ì£¼ì‹ í™•ì¸
+    '''mystocks dbÀÇ ³» º¸À¯ÁÖ½Ä ¼ö·® Â÷°¨'''
+    # º¸À¯ÁÖ½Ä È®ÀÎ
     mystock = db.query(MyStocks).filter(
         MyStocks.login_id == user.login_id,
         MyStocks.stock_code == req.stock_code).first()
@@ -101,14 +101,14 @@ def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: st
     #   db.refresh(MyStocks)  
 
 
-    '''í˜„ì¬ ê°€ì¹˜ ë¶ˆëŸ¬ì™€ì„œ user dbì˜ ì”ê³ ì— ëˆ ì¶”ê°€'''
+    '''ÇöÀç °¡Ä¡ ºÒ·¯¿Í¼­ user dbÀÇ ÀÜ°í¿¡ µ· Ãß°¡'''
     total_earned = req.current_price * req.quantity
     
     db.query(User).filter(User.id == user.id).update({"balance": User.balance + total_earned})
     db.commit()
 
     return {
-        'msg' : 'ë§¤ë„ ì„±ê³µ'
+        'msg' : '¸Åµµ ¼º°ø'
     }
 
 
