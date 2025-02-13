@@ -51,7 +51,7 @@
                                 </thead>
                                 <tbody id="stock-table-body">
                                     <tr><td><a href="#" class="stock-code-link">005930</a></td><td>삼성전자</td><td>3000</td></tr>
-                                    <tr><td><a href="#" class="stock-code-link">000660</a></td><td>SK하이닉스</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">000660</a></td><td>SK하이닉스</td><td>2000</td></tr>
                                     <tr><td><a href="#" class="stock-code-link">005380</a></td><td>현대자동차</td><td></td></tr>
                                     <tr><td><a href="#" class="stock-code-link">000270</a></td><td>기아</td><td></td></tr>
                                     <tr><td><a href="#" class="stock-code-link">005490</a></td><td>POSCO홀딩스</td><td></td></tr>
@@ -104,8 +104,8 @@
                         </div> 
                     </div>
                     <div class="middle-under-body">
-                        <button id="sell">매도</button>
                         <button id="buy">매수</button>
+                        <button id="sell">매도</button>
                     </div>
                 </div>
             </div>
@@ -425,6 +425,12 @@
 
                 // 테이블 행을 돌면서 업데이트
                 const rows = myStockTable.getElementsByTagName("tr");
+
+                for (let row of rows) {
+                    row.cells[0].textContent = "";
+                    row.cells[1].textContent = "-";
+                    row.cells[2].textContent = "-";
+                }
                 let index = 0;
 
                 myStocks.forEach(stock => {
@@ -448,6 +454,74 @@
             document.addEventListener("DOMContentLoaded", fetchMyStocks);
         </script>
 
+
+            <script>
+            document.getElementById("sell").addEventListener("click", async function() {
+            const token = localStorage.getItem("token");  // 로컬 스토리지에서 토큰 가져오기
+            if (!token) {
+                alert("로그인이 필요합니다.");
+                return;
+            }
+
+            const stockNameDisplay = document.getElementById("stock-name-display").innerText.trim();
+            const stockName = stockNameDisplay.replace("종목 이름 : ", "").trim();
+            const quantity = parseInt(document.getElementById("quantity").value);
+            const price = parseInt(document.getElementById("price").value);
+
+            if (!stockName || stockName === "" || isNaN(quantity) || isNaN(price) || quantity <= 0 || price <= 0) {
+                alert("종목을 선택하고 수량을 입력해주세요.");
+                return;
+            }
+
+            // 주식 코드 가져오기 (왼쪽 테이블에서 찾기)
+            let stockCode = null;
+            const rows = document.querySelectorAll("#stock-table-body tr");
+            rows.forEach(row => {
+                if (row.cells[1].innerText.trim() === stockName) {
+                    stockCode = row.cells[0].innerText.trim();
+                }
+            });
+
+            if (!stockCode) {
+                alert("주식 코드를 찾을 수 없습니다.");
+                return;
+            }
+
+            const payload = {
+                stock_code: stockCode,
+                quantity: Number(quantity),
+                stock_price: Number(price)
+            };
+
+            try {
+                const response = await fetch('/trade/sell', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("매도 성공!");
+
+                    // 보유 주식 테이블 새로고침
+                    fetchMyStocks();
+                    // 잔액 새로고침
+                    fetchBalance();
+                } else {
+                    alert(`매도 실패: ${result.detail}`);
+                }
+            } catch (error) {
+                console.error("매도 중 오류 발생:", error);
+                alert("매도도 중 문제가 발생했습니다.");
+            }
+        });
+        </script>
+        </script>
 
         <script>
             document.getElementById("buy").addEventListener("click", async function() {
