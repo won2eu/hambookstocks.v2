@@ -43,7 +43,7 @@
                         <div class="caption">
                             <h2><em>주식투자</em> 게임</h2>
                             <div class="main-button">
-                                <div class="scroll-to-section"><a href="/front2/index">게임 시작</a></div>
+                                <div class="scroll-to-section"><a id="game-start">게임 시작</a></div>
                             </div>
                         </div>
                     </div>
@@ -170,6 +170,26 @@
     <script src="assets/js/slick-slider.js"></script>
     <script src="assets/js/custom.js"></script>
     <script>
+      document.getElementById("game-start").addEventListener("click", async function(event) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const response = await fetch("http://127.0.0.1:8000/auth/logout", {  // FastAPI 로그아웃 엔드포인트
+              method: "POST",
+              headers: {
+                  "Authorization": `Bearer ${token}`
+              }
+          });
+          if (response.ok) {
+            window.location.href = "/front2/index";
+          } else{
+            alert("토큰 검증 실패! 다시 로그인해주세요.");
+          } 
+        }
+        else {
+          alert("로그인이 필요합니다.");
+        }
+      });
+
       document.getElementById("login-form").addEventListener("submit", async function (event) {
         event.preventDefault();  // 기본 폼 제출 막기
         const loginButton = document.getElementById("form-submit")
@@ -200,7 +220,6 @@
         }
 
         else if (loginButton.innerHTML === "로그아웃") {
-          console.log(1111)
           const token = localStorage.getItem("token");
 
           if (token) {
