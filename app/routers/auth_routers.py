@@ -5,6 +5,7 @@ from app.models.user_models import User
 from app.dependencies.db import *
 from app.dependencies.jwt_utils import JWTUtil
 from app.services.auth_service import AuthService
+from typing import Annotated
 
 
 router = APIRouter(
@@ -68,3 +69,23 @@ def auth_logout(db: Session=Depends(get_db_session), authorization: str=Header(N
     db.commit()
 
     return {"message": "로그아웃 되었습니다."}
+
+@router.post('/check-token')
+def check_token(Authorization: Annotated[str, Header()],
+                jwtUtil: JWTUtil = Depends()):
+    token = Authorization.replace("Bearer ", "")
+    if not token:
+        raise HTTPException(status_code=400, detail="Token is required")
+    try:
+        payload = jwtUtil.decode_token(token)
+        if payload is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Token decode error")
+    
+    login_id = payload.get("login_id")
+    
+    if login_id is None:
+        raise HTTPException(status_code=400, detail="Login ID not found in token")
+    return {"message": "Token is valid"}
+    
