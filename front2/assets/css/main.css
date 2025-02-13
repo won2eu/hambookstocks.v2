@@ -3,6 +3,27 @@ body {
   background-color: #f8f9fa;
   color: #333;
 }
+
+.chart-container {
+  width: 100%;
+  height: 480px; /* 고정 높이 */
+  position: relative;
+}
+
+#stock-chart {
+  width: 100%;
+  height: 450px; /* 그래프 높이 적당히 설정 */
+}
+
+.middle-body .panel {
+  height: auto; /* 고정 높이 없애기 */
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
 .navbar-time {
   position: absolute;
   left: 50%;
@@ -12,26 +33,41 @@ body {
   margin-right: 15px;
   font-weight: bold;
   align-items: center;
-
 }
 
-#quantity{
+#quantity {
   font-size: 35px;
   width: 100px;
   height: 40px;
   border: 1px solid #b95a5a;
   text-align: center;
 }
+#price {
+  font-size: 35px;
+  width: 300px;
+  height:40px;
+  border: 1px solid #b95a5a;
+  text-align: right;
+}
+
 
 label {
   margin-bottom: 5px; /* 입력 필드와 간격 조정 */
   font-size: 30px; /* 글씨 크기 조정 */
 }
 
-.quantity-container {
+.quantity-container, .quantity-price-container {
+  display: flex;
+  flex-direction: row;
   text-align: center; /* 가운데 정렬 */
-  flex-direction: column;
   align-items: center; /* 수직 정렬 */
+}
+
+
+.quantity-price-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 #balance{

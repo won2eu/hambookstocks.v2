@@ -8,11 +8,6 @@ from app.models.parameter_models import stock_to_buy, SellStockReq
 router = APIRouter(
     prefix = '/trade'
 )
-class buyResp(): #응답모델
-    login_id: str
-    access_token: str
-    stock_code : int
-    quantity: int
 
 @router.post("/buy") #req: 수량, 금액, 주식 코드, 
 def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authorization: str =Header(None)):

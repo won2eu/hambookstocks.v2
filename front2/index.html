@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>햄북STOCKS</title>
     <base href="/front2/">
     <meta charset="utf-8">
@@ -49,26 +50,26 @@
                                     </tr>
                                 </thead>
                                 <tbody id="stock-table-body">
-                                    <tr><td><a href="#">005930</a></td><td>삼성전자</td><td></td></tr>
-                                    <tr><td><a href="#">000660</a></td><td>SK하이닉스</td><td></td></tr>
-                                    <tr><td><a href="#">005380</a></td><td>현대자동차</td><td></td></tr>
-                                    <tr><td><a href="#">000270</a></td><td>기아</td><td></td></tr>
-                                    <tr><td><a href="#">005490</a></td><td>POSCO홀딩스</td><td></td></tr>
-                                    <tr><td><a href="#">012450</a></td><td>한화에어로스페이스</td><td></td></tr>
-                                    <tr><td><a href="#">403870</a></td><td>HPSP</td><td></td></tr>
-                                    <tr><td><a href="#">042700</a></td><td>한미반도체</td><td></td></tr>
-                                    <tr><td><a href="#">086520</a></td><td>에코프로</td><td></td></tr>
-                                    <tr><td><a href="#">247540</a></td><td>에코프로비엠</td><td></td></tr>
-                                    <tr><td><a href="#">066970</a></td><td>엘앤에프</td><td></td></tr>
-                                    <tr><td><a href="#">278280</a></td><td>천보</td><td></td></tr>
-                                    <tr><td><a href="#">253590</a></td><td>네오셈</td><td></td></tr>
-                                    <tr><td><a href="#">348370</a></td><td>엔켐</td><td></td></tr>
-                                    <tr><td><a href="#">028300</a></td><td>HLB</td><td></td></tr>
-                                    <tr><td><a href="#">196170</a></td><td>알테오젠</td><td></td></tr>
-                                    <tr><td><a href="#">272210</a></td><td>한화시스템</td><td></td></tr>
-                                    <tr><td><a href="#">000250</a></td><td>삼천당제약</td><td></td></tr>
-                                    <tr><td><a href="#">095610</a></td><td>테스</td><td></td></tr>
-                                    <tr><td><a href="#">210980</a></td><td>SK디앤디</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">005930</a></td><td>삼성전자</td><td>3000</td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">000660</a></td><td>SK하이닉스</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">005380</a></td><td>현대자동차</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">000270</a></td><td>기아</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">005490</a></td><td>POSCO홀딩스</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">012450</a></td><td>한화에어로스페이스</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">403870</a></td><td>HPSP</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">042700</a></td><td>한미반도체</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">086520</a></td><td>에코프로</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">247540</a></td><td>에코프로비엠</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">066970</a></td><td>엘앤에프</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">278280</a></td><td>천보</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">253590</a></td><td>네오셈</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">348370</a></td><td>엔켐</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">028300</a></td><td>HLB</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">196170</a></td><td>알테오젠</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">272210</a></td><td>한화시스템</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">000250</a></td><td>삼천당제약</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">095610</a></td><td>테스</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">210980</a></td><td>SK디앤디</td><td></td></tr>
                                     <!--웹소켓 데이터 여기 표시된다잉잉-->
                                 </tbody>
                             </table>
@@ -78,17 +79,29 @@
             </div>
             
             <div class="middle-body">
-                <div class="space-div"></div>
+                <div class="stock-info">
+                    <h3 id="stock-name-display"></h3>
+                </div>
+
                 <div class="panel">
+                    <div class="chart-container">
+                        <canvas id="stock-chart" width="400" height="300"></canvas>
+                    </div>
                     <div>
                         <div class="balance-container">
                             <label for="balance">보유 금액:&nbsp;</label>
                             <input type="number" id="balance" name="balance" min="0" value="0" readonly>
-                        </div>                        
-                        <div class="quantity-container">
-                            <label for="quantity">수량:&nbsp;</label>
-                            <input type="number" id="quantity" name="quantity" min="1" max="100" value="1">
-                        </div>
+                        </div>   
+                        <div class="quantity-price-container">                
+                            <div class="quantity-container">
+                                <label for="quantity">수량:&nbsp;</label>
+                                <input type="number" id="quantity" name="quantity" min="1" max="100" value="1">
+                            </div>
+                            <div class="price-container">
+                                <label for="price">금액:&nbsp;</label>
+                                <input type="number" id="price" name="price" min="0" value="0" readonly>
+                            </div>
+                        </div> 
                     </div>
                     <div class="middle-under-body">
                         <button id="buy">매도</button>
@@ -113,8 +126,27 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td><a href="#">.</a></td><td>3</td><td>5</td></tr>
-                            
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -137,16 +169,18 @@
         updateTime(); // 페이지 로드 시 시간 업데이트
         
         document.getElementById("give-up").addEventListener("click", async function(event) {
-            const token = localStorage.getItem("access_token");  // 예: 로컬스토리지에서 토큰 가져오기
-            const reponse = await fetch('/gg', {
+            const token = localStorage.getItem("token");  // 예: 로컬스토리지에서 토큰 가져오기
+            const response = await fetch('/gg', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`
                 }
             });
 
             if (response.ok) {
+                localStorage.removeItem("token");
                 window.location.href = '/front/index';  // 로그인 페이지로 리다이렉트
+                
             } else {
                 // 오류 처리
                 alert("GG 실패");
@@ -155,6 +189,9 @@
         </script>
         <script>
             let stockPrices = {}; // 기존 주식 데이터를 저장할 객체
+            let selectedStockCode = null;
+            let stockHistory = {};
+            let chart = null;
 
             const socket = new WebSocket("ws://localhost:8000/ws/stocks"); //웹소켓 연결
 
@@ -165,8 +202,6 @@
             socket.onmessage = function (event) {
                 try {
                     const stockDataArray = JSON.parse(event.data); // JSON 데이터 파싱
-                    console.log("📊 실시간 주식 데이터 수신:", stockDataArray);
-                    console.log(1)
 
                     stockDataArray.forEach(stock => {
                         // 데이터가 없으면 기존 가격 유지
@@ -177,13 +212,48 @@
 
                         // 주식 코드와 가격 저장
                         stockPrices[stock.stock_code] = stock.current_price;
-                    });
 
+                        const now = new Date();
+                        const currentTime = now.toLocaleTimeString();
+
+
+                        if (!(stock.stock_code in stockHistory)) {
+                            stockHistory[stock.stock_code] = [];
+                        }
+
+                        stockHistory[stock.stock_code].push({
+                            time: currentTime,
+                            price: parseInt(stock.current_price)
+                        });
+
+                        if (stockHistory[stock.stock_code].length > 50) {
+                            stockHistory[stock.stock_code].shift();
+                        }
+
+                        if (selectedStockCode === stock.stock_code) {
+                            updateChart(stock.stock_code);
+                        }
+
+                    });
                     updateStockTable(); // UI 업데이트
                 } catch (error) {
                     console.error("❌ 데이터 처리 오류:", error);
                 }
             };
+
+            document.querySelectorAll("#stock-table-body a").forEach(a => {
+                a.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const stockCode = this.textContent.trim();
+                    selectedStockCode = stockCode;
+
+                    if (!(stockCode in stockHistory)) {
+                        stockHistory[stockCode] = [];
+                    }
+
+                    updateChart(stockCode);
+                    });
+                });
 
             socket.onerror = function (error) {
                 console.error("🚨 WebSocket 오류 발생:", error);
@@ -192,6 +262,42 @@
             socket.onclose = function () {
                 console.log("❌ WebSocket 연결 종료");
             };
+
+            
+
+            // 그래프 그려주는 함수
+            function updateChart(stockCode) {
+                const ctx = document.getElementById('stock-chart').getContext('2d');
+
+                const labels = stockHistory[stockCode].map(item => item.time);
+                const prices = stockHistory[stockCode].map(item => item.price);
+                
+                if (chart) {
+                    chart.destroy();
+                }
+
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `${stockCode} 체결가 추이`,
+                            data: prices,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.2,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { title: { display: true, text: '시간' } },
+                            y: { title: { display: true, text: '가격' }, beginAtZero: false }
+                        }
+                    }
+                });
+            }
 
             // 📌 **테이블 업데이트 함수 (주식 코드 기준으로 매칭)**
             function updateStockTable() {
@@ -209,7 +315,6 @@
                     const stockPriceCell = row.cells[2]; // 세 번째 컬럼 (체결가)
 
                     const stockCode = stockCodeCell.textContent.trim();
-                    console.log(stockPrices)
 
                     // stockPrices에 데이터가 있으면 업데이트, 없으면 기존 값 유지
                     if (stockCode in stockPrices) {
@@ -218,6 +323,133 @@
                 }
             }
 
+        </script>
+
+
+        <script>
+            //매도 매수 버튼
+
+        </script>
+
+        <script>
+            document.querySelectorAll('.dropdown-menu li a').forEach(item => {
+                if (item.textContent.trim() === "로그아웃") {
+                    item.addEventListener("click", async function(event) {
+                        const token = localStorage.getItem("token");  // 로컬 스토리지에서 토큰을 가져옵니다.
+
+                        // 로그아웃 API 호출
+                        const response = await fetch('/auth/logout', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,  // 헤더에 토큰을 전달
+                            }
+                        });
+
+                        if (response.ok) {
+                            // 로그아웃 성공 후 로그인 페이지로 리다이렉트
+                            localStorage.removeItem("token");  // 로컬 스토리지에서 토큰 제거
+                            alert("로그아웃 되었습니다.")
+                            window.location.href = '/front/index';  // 로그인 페이지로 리다이렉트
+                        } else {
+                            // 오류 처리
+                            alert("로그아웃 실패");
+                        }
+                    });
+                }
+            });
+        </script>
+
+        <script>
+            async function fetchBalance() {
+                const token = localStorage.getItem("token");  // 저장된 토큰 가져오기
+                if (!token) {
+                    alert("로그인이 필요합니다.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch("/my/balance", {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }                        
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        document.getElementById("balance").value = data.balance;  // balance 값 업데이트
+                    } else {
+                        console.error("잔액 조회 실패:", response.statusText);
+                    }
+                } catch (error) {
+                    console.error("잔액 조회 오류:", error);
+                }
+            }
+
+            // 페이지 로드 시 잔액 조회 실행
+            window.onload = fetchBalance;
+        </script>
+
+
+        <script>
+            // 주식 코드 클릭 시 해당 주식 이름 띄우기
+            document.querySelectorAll('.stock-code-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const clickedLink = e.target;
+                const row = clickedLink.closest('tr'); // 해당 링크가 속한 <tr> 찾기
+                const thirdCellValue = row.cells[1].innerText; // 3번째 열(0부터 시작)
+
+                // 가져온 3번째 열의 값을 middle-body 상단에 띄우기
+                document.getElementById('stock-name-display').innerText = `${thirdCellValue}`;
+            });
+        });
+        </script>
+
+        <script>
+            document.querySelectorAll('.stock-code-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const clickedLink = e.target;
+                const row = clickedLink.closest('tr');
+                const stockName = row.cells[1].innerText; // 주식 이름 가져오기
+                const price = row.cells[2].innerText; // 체결가 가져오기
+
+                document.getElementById('stock-name-display').innerText = `종목 이름 : ${stockName}`;
+
+                // 가격 칸에 체결가 자동 반영
+                const priceInput = document.getElementById('price');
+                priceInput.value = price.replace(/,/g, ''); // 쉼표 제거해서 숫자로 넣기
+            });
+        });
+        let unitPrice = 0; 
+
+        document.querySelectorAll('.stock-code-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const clickedLink = e.target;
+                const row = clickedLink.closest('tr');
+                const stockName = row.cells[1].innerText;
+                const priceText = row.cells[2].innerText.trim();
+
+                document.getElementById('stock-name-display').innerText = `종목 이름 : ${stockName}`;
+
+                // 주당 가격 저장 (쉼표 제거 후 숫자로 변환)
+                unitPrice = priceText === '' ? 0 : parseInt(priceText.replace(/,/g, ''));
+
+                // 초기에는 수량 1 기준으로 가격칸 설정
+                const quantity = parseInt(document.getElementById('quantity').value) || 1;
+                document.getElementById('price').value = unitPrice * quantity;
+            });
+        });
+        document.getElementById('quantity').addEventListener('input', function () {
+            const quantity = parseInt(this.value) || 0;
+            const totalPrice = unitPrice * quantity;
+            document.getElementById('price').value = totalPrice;
+        });
         </script>
 </body>
 </html>
