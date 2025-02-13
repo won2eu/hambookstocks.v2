@@ -44,7 +44,6 @@
       text-align: center;
   }
 
-
   .container {
     background-color: #777a8c;
     padding: 2rem;
@@ -110,3 +109,6 @@
     text-decoration: underline;
   }
   
+  #game-start {
+    color: white;
+  }

@@ -2,24 +2,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from app.dependencies.db import *
 from app.routers import (trade_routers,auth_routers, record_routers, mystocks_routers, stock_routers, set_page_routers)
-
-import os
 from fastapi.staticfiles import StaticFiles
 
 create_db_and_table()
 
 app = FastAPI()
 
-# âœ… CORS ì„¤ì • ì¶”ê°€
+# ? CORS ¼³Á¤ Ãß°¡
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ëª¨ë“  ë„ë©”ì¸ í—ˆìš© (ë°°í¬ ì‹œì—ëŠ” íŠ¹ì • ë„ë©”ì¸ìœ¼ë¡œ ì œí•œ)
+    allow_origins=["*"],  # ¸ğµç µµ¸ŞÀÎ Çã¿ë (¹èÆ÷ ½Ã¿¡´Â Æ¯Á¤ µµ¸ŞÀÎÀ¸·Î Á¦ÇÑ)
     allow_credentials=True,
-    allow_methods=["*"],  # ëª¨ë“  HTTP ë©”ì„œë“œ í—ˆìš©
-    allow_headers=["*"],  # ëª¨ë“  í—¤ë” í—ˆìš©
+    allow_methods=["*"],  # ¸ğµç HTTP ¸Ş¼­µå Çã¿ë
+    allow_headers=["*"],  # ¸ğµç Çì´õ Çã¿ë
 )
 
-# í”„ë¡ íŠ¸ ì—°ê²°
+# ÇÁ·ĞÆ® ¿¬°á
 app.mount("/front/assets", StaticFiles(directory="front/assets"), name="assets")
 app.mount("/front/vendor", StaticFiles(directory="front/vendor"), name="vendor")
 app.mount("/front2/assets", StaticFiles(directory="front2/assets"), name="assets")
@@ -46,33 +44,33 @@ app.include_router(set_page_routers.router)
 # import random
 # import datetime
 
-# # FastAPI ì• í”Œë¦¬ì¼€ì´ì…˜ ì´ˆê¸°í™”
+# # FastAPI ¾ÖÇÃ¸®ÄÉÀÌ¼Ç ÃÊ±âÈ­
 # app = FastAPI()
 
 # create_db_and_table()
-# put_temp_data()  # ì„ì‹œ ë°ì´í„° ì¶”ê°€
+# put_temp_data()  # ÀÓ½Ã µ¥ÀÌÅÍ Ãß°¡
 
-# # âœ… CORS ì„¤ì • ì¶”ê°€
+# # ? CORS ¼³Á¤ Ãß°¡
 # app.add_middleware(
 #     CORSMiddleware,
-#     allow_origins=["*"],  # ëª¨ë“  ë„ë©”ì¸ í—ˆìš© (ë°°í¬ ì‹œì—ëŠ” íŠ¹ì • ë„ë©”ì¸ìœ¼ë¡œ ì œí•œ)
+#     allow_origins=["*"],  # ¸ğµç µµ¸ŞÀÎ Çã¿ë (¹èÆ÷ ½Ã¿¡´Â Æ¯Á¤ µµ¸ŞÀÎÀ¸·Î Á¦ÇÑ)
 #     allow_credentials=True,
-#     allow_methods=["*"],  # ëª¨ë“  HTTP ë©”ì„œë“œ í—ˆìš©
-#     allow_headers=["*"],  # ëª¨ë“  í—¤ë” í—ˆìš©
+#     allow_methods=["*"],  # ¸ğµç HTTP ¸Ş¼­µå Çã¿ë
+#     allow_headers=["*"],  # ¸ğµç Çì´õ Çã¿ë
 # )
 
-# # âœ… í”„ë¡ íŠ¸ì—”ë“œ íŒŒì¼ ì œê³µ
+# # ? ÇÁ·ĞÆ®¿£µå ÆÄÀÏ Á¦°ø
 # app.mount("/front/assets", StaticFiles(directory="front/assets"), name="assets")
 # app.mount("/front/vendor", StaticFiles(directory="front/vendor"), name="vendor")
 # app.mount("/front2/assets", StaticFiles(directory="front2/assets"), name="assets")
 
-# # âœ… API ë¼ìš°í„° ì¶”ê°€
+# # ? API ¶ó¿ìÅÍ Ãß°¡
 # app.include_router(mystocks_routers.router)
 # app.include_router(auth_routers.router)
 # app.include_router(record_routers.router)
 # app.include_router(stock_routers.router)
 
-# # âœ… ê¸°ë³¸ í˜ì´ì§€ ë¼ìš°íŠ¸
+# # ? ±âº» ÆäÀÌÁö ¶ó¿ìÆ®
 # @app.get("/", response_class=RedirectResponse)
 # async def root():
 #     return RedirectResponse(url="/front/index")
@@ -85,7 +83,7 @@ app.include_router(set_page_routers.router)
 #             content = file.read()
 #         return HTMLResponse(content=content)
 #     else:
-#         return HTMLResponse(content="í˜ì´ì§€ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.", status_code=404)
+#         return HTMLResponse(content="ÆäÀÌÁö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.", status_code=404)
 
 # @app.get("/front2/{page_name}", response_class=HTMLResponse)
 # async def get_page(page_name: str = "index"):
@@ -95,59 +93,59 @@ app.include_router(set_page_routers.router)
 #             content = file.read()
 #         return HTMLResponse(content=content)
 #     else:
-#         return HTMLResponse(content="í˜ì´ì§€ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.", status_code=404)
+#         return HTMLResponse(content="ÆäÀÌÁö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.", status_code=404)
 
 
-# ############################################## âœ… ì‹¤ì‹œê°„ ëª¨ì˜ í…ŒìŠ¤íŠ¸ ì›¹ì†Œì¼“ ###################################
+# ############################################## ? ½Ç½Ã°£ ¸ğÀÇ Å×½ºÆ® À¥¼ÒÄÏ ###################################
 
-# # í…ŒìŠ¤íŠ¸í•  ì£¼ì‹ ì¢…ëª© ë¦¬ìŠ¤íŠ¸
+# # Å×½ºÆ®ÇÒ ÁÖ½Ä Á¾¸ñ ¸®½ºÆ®
 # STOCK_CODES = [
-#     "005930",  # ì‚¼ì„±ì „ì
-#     "000660",  # SKí•˜ì´ë‹‰ìŠ¤
-#     "005380",  # í˜„ëŒ€ìë™ì°¨
-#     "000270",  # ê¸°ì•„
-#     "005490",  # POSCOí™€ë”©ìŠ¤
-#     "012450",  # í•œí™”ì—ì–´ë¡œìŠ¤í˜ì´ìŠ¤
+#     "005930",  # »ï¼ºÀüÀÚ
+#     "000660",  # SKÇÏÀÌ´Ğ½º
+#     "005380",  # Çö´ëÀÚµ¿Â÷
+#     "000270",  # ±â¾Æ
+#     "005490",  # POSCOÈ¦µù½º
+#     "012450",  # ÇÑÈ­¿¡¾î·Î½ºÆäÀÌ½º
 #     "403870",  # HPSP
-#     "042700",  # í•œë¯¸ë°˜ë„ì²´
-#     "086520",  # ì—ì½”í”„ë¡œ
-#     "247540",  # ì—ì½”í”„ë¡œë¹„ì— 
-#     "066970",  # ì—˜ì•¤ì—í”„
-#     "278280",  # ì²œë³´
-#     "253590",  # ë„¤ì˜¤ì…ˆ
-#     "348370",  # ì—”ì¼
+#     "042700",  # ÇÑ¹Ì¹İµµÃ¼
+#     "086520",  # ¿¡ÄÚÇÁ·Î
+#     "247540",  # ¿¡ÄÚÇÁ·Îºñ¿¥
+#     "066970",  # ¿¤¾Ø¿¡ÇÁ
+#     "278280",  # Ãµº¸
+#     "253590",  # ³×¿À¼À
+#     "348370",  # ¿£ÄÍ
 #     "028300",  # HLB
-#     "196170",  # ì•Œí…Œì˜¤ì  
-#     "092870",  # ì—‘ì‹œì½˜
-#     "000250",  # ì‚¼ì²œë‹¹ì œì•½
-#     "095610",  # í…ŒìŠ¤
-#     "210980"   # SKë””ì•¤ë””
+#     "196170",  # ¾ËÅ×¿ÀÁ¨
+#     "092870",  # ¿¢½ÃÄÜ
+#     "000250",  # »ïÃµ´çÁ¦¾à
+#     "095610",  # Å×½º
+#     "210980"   # SKµğ¾Øµğ
 # ]
 
-# # ì£¼ì‹ ì‘ë‹µ ëª¨ë¸
+# # ÁÖ½Ä ÀÀ´ä ¸ğµ¨
 # class StockPriceResponse(BaseModel):
 #     stock_code: str
-#     timestamp: str  # HHMMSS í˜•ì‹
-#     current_price: int  # ì •ìˆ˜ ê°€ê²©
+#     timestamp: str  # HHMMSS Çü½Ä
+#     current_price: int  # Á¤¼ö °¡°İ
 
-# # âœ… ì›¹ì†Œì¼“ í•¸ë“¤ëŸ¬ ì¶”ê°€
+# # ? À¥¼ÒÄÏ ÇÚµé·¯ Ãß°¡
 # @app.websocket("/ws/stocks/1")
 # async def websocket_stock_prices(websocket: WebSocket):
-#     """í´ë¼ì´ì–¸íŠ¸ê°€ ì—°ê²°ë˜ë©´ 1ì´ˆë§ˆë‹¤ ëœë¤ ì£¼ì‹ ë°ì´í„°ë¥¼ ë³´ëƒ„ (ê°€ë” ë°ì´í„° ëˆ„ë½ í¬í•¨)"""
+#     """Å¬¶óÀÌ¾ğÆ®°¡ ¿¬°áµÇ¸é 1ÃÊ¸¶´Ù ·£´ı ÁÖ½Ä µ¥ÀÌÅÍ¸¦ º¸³¿ (°¡²û µ¥ÀÌÅÍ ´©¶ô Æ÷ÇÔ)"""
     
-#     await websocket.accept()  # ì›¹ì†Œì¼“ ì—°ê²° ìˆ˜ë½
+#     await websocket.accept()  # À¥¼ÒÄÏ ¿¬°á ¼ö¶ô
 
 #     try:
 #         while True:
 #             stock_data_list = []
 
-#             # ëœë¤í•˜ê²Œ ëª‡ ê°œ ë°ì´í„°ë¥¼ ì œì™¸ (ìµœëŒ€ 9ê°œê¹Œì§€ ë¹ ì§ˆ ìˆ˜ ìˆìŒ)
+#             # ·£´ıÇÏ°Ô ¸î °³ µ¥ÀÌÅÍ¸¦ Á¦¿Ü (ÃÖ´ë 9°³±îÁö ºüÁú ¼ö ÀÖÀ½)
 #             missing_count = 19 #random.randint(0, 9)
 #             selected_stocks = random.sample(STOCK_CODES, len(STOCK_CODES) - missing_count)
 
 #             for stock_code in selected_stocks:
-#                 stock_price = 9999  # 5ë§Œ~20ë§Œ ì› ì‚¬ì´ ëœë¤ ê°€ê²©
-#                 timestamp = datetime.datetime.now().strftime("%H%M%S")  # HHMMSS í˜•ì‹
+#                 stock_price = 9999  # 5¸¸~20¸¸ ¿ø »çÀÌ ·£´ı °¡°İ
+#                 timestamp = datetime.datetime.now().strftime("%H%M%S")  # HHMMSS Çü½Ä
 
 #                 stock_response = StockPriceResponse(
 #                     stock_code=stock_code,
@@ -156,9 +154,9 @@ app.include_router(set_page_routers.router)
 #                 )
 #                 stock_data_list.append(stock_response.dict())
 
-#             # JSON ë°ì´í„° ì „ì†¡
+#             # JSON µ¥ÀÌÅÍ Àü¼Û
 #             await websocket.send_json(stock_data_list)
-#             await asyncio.sleep(1)  # 1ì´ˆ ë‹¨ìœ„ë¡œ ì—…ë°ì´íŠ¸
+#             await asyncio.sleep(1)  # 1ÃÊ ´ÜÀ§·Î ¾÷µ¥ÀÌÆ®
 
 #     except WebSocketDisconnect:
-#         print("âŒ í´ë¼ì´ì–¸íŠ¸ ì—°ê²° ì¢…ë£Œ")
+#         print("? Å¬¶óÀÌ¾ğÆ® ¿¬°á Á¾·á")

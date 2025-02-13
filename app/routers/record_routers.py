@@ -56,4 +56,6 @@ def get_my_balance(db=Depends(get_db_session), authorization: str=Header(None)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+
     return {"message": "잔액 조회 성공", "balance": user.balance}
+

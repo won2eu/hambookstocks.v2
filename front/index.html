@@ -190,7 +190,6 @@
         }
       });
 
-
       document.getElementById("login-form").addEventListener("submit", async function (event) {
         event.preventDefault();  // 기본 폼 제출 막기
         const loginButton = document.getElementById("form-submit")
@@ -221,7 +220,6 @@
         }
 
         else if (loginButton.innerHTML === "로그아웃") {
-          console.log(1111)
           const token = localStorage.getItem("token");
 
           if (token) {

@@ -70,6 +70,7 @@ def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: st
     user = db.query(User).filter(User.access_token == token).first()
     if not user:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
+    
     '''mystocks db의 내 보유주식 수량 차감'''
     # 보유주식 확인
     mystock = db.query(MyStocks).filter(
@@ -102,7 +103,3 @@ def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: st
     return {
         'msg' : '매도 성공'
     }
-
-
-
-

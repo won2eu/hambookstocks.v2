@@ -3,11 +3,16 @@ import json
 import requests
 import asyncio
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+g_appkey = os.getenv("APP_KEY")
+g_appsecret = os.getenv("APP_SECRET")
+
 
 router = APIRouter()
-
-g_appkey = "PSa3ipf9akG6hMx41Hzq1ALxMPBOTnJ0ogNy"
-g_appsecret = "6Sq3eROwWwdJYqku2HNefF3TOZVdR9zY8g51Xo2YGEt/r++qvdJ14m3O2NssObo04ou0OmcWXbzBlFpJGSNKXx7yxknsI2g8YJMEvOeZRFkZnkcKDkV7cbbhmxrPlQ3JEfFAkYSn8XFHz30ub/ZcYYrJFxBwZSuLO1IG5eyRdzevtbKZCuc="
 
 STOCK_CODES = [
     "005930", "000660", "005380", "000270", "005490",
