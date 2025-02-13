@@ -3,12 +3,11 @@ from sqlalchemy.orm import Session
 from app.dependencies.db import get_db_session
 from app.models.user_models import User
 from app.models.mystocks_models import MyStocks
-from app.models.parameter_models import stock_to_buy
+from app.models.parameter_models import stock_to_buy, SellStockReq
 
 router = APIRouter(
     prefix = '/trade'
 )
-
 class buyResp(): #응답모델
     login_id: str
     access_token: str
@@ -50,7 +49,7 @@ def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authoriz
 
     else:
         new_stock = MyStocks(
-            login_id = user.id,
+            login_id = user.login_id,
             stock_code=req.stock_code,
             quantity=req.quantity,
             access_token= user.access_token,
@@ -60,3 +59,55 @@ def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authoriz
     db.commit()
     
     return {"msg": "구매 완료"}
+
+
+
+
+@router.post('/sell')
+def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: str = Header(None)):
+
+    '''토큰인증'''
+    if not authorization:
+        raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
+    #table에 해당 토큰이 있는지 확인
+    user = db.query(User).filter(User.access_token == token).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
+    #token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
+
+    '''mystocks db의 내 보유주식 수량 차감'''
+    # 보유주식 확인
+    mystock = db.query(MyStocks).filter(
+        MyStocks.login_id == user.login_id,
+        MyStocks.stock_code == req.stock_code).first()
+    
+    if not mystock:
+        raise HTTPException(status_code=404, detail="Not Found")
+    
+    if mystock.quantity > req.quantity:
+        db.query(MyStocks).filter(
+            MyStocks.login_id == user.login_id,
+            MyStocks.stock_code == req.stock_code
+        ).update({"quantity": MyStocks.quantity - req.quantity})
+    
+    
+    elif mystock.quantity == req.quantity:
+        db.delete(mystock)
+
+    db.commit()
+    #   db.refresh(MyStocks)  
+
+
+    '''현재 가치 불러와서 user db의 잔고에 돈 추가'''
+    total_earned = req.current_price * req.quantity
+    
+    db.query(User).filter(User.id == user.id).update({"balance": User.balance + total_earned})
+    db.commit()
+
+    return {
+        'msg' : '매도 성공'
+    }
+
+
+
+
