@@ -37,13 +37,17 @@ def get_mystocks(Authorization: Annotated[str, Header()],
 def gg(Authorization: Annotated[str, Header()],
        jwtUtil: JWTUtil = Depends(),
        db=Depends(get_db_session)):
+    
     token = Authorization.replace("Bearer ", "")
+
     if not token:
         raise HTTPException(status_code=400, detail="Token is required")
+
     try:
         payload = jwtUtil.decode_token(token)
         if payload is None:
             raise HTTPException(status_code=401, detail="Invalid token")
+        
     except Exception as e:
         raise HTTPException(status_code=401, detail="Token decode error")
 
@@ -53,6 +57,7 @@ def gg(Authorization: Annotated[str, Header()],
         raise HTTPException(status_code=400, detail="Login ID not found in token")
     db.query(MyStocks).filter(MyStocks.login_id == login_id).delete()
     db.query(User).filter(User.login_id == login_id).update({"balance": 1000000})
+    db.query(User).filter(User.login_id == login_id).update({"access_token": None})
     db.commit()
 
-    return {"message": "gg"}
+    return {"message": "gg"} 

@@ -88,4 +88,4 @@ def check_token(Authorization: Annotated[str, Header()],
     if login_id is None:
         raise HTTPException(status_code=400, detail="Login ID not found in token")
     return {"message": "Token is valid"}
-    
+

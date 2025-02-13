@@ -16,7 +16,7 @@ class AuthResp(BaseModel):
     user: User
     access_token: str | None = None
 
-class stock_to_buy(BaseModel): #req ?´?˜?Š¤
+class stock_to_buy(BaseModel): #req í´ë˜ìŠ¤
     login_id : str
     stock_code: str
     stock_price: int | None = None

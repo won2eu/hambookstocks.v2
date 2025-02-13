@@ -8,11 +8,6 @@ from app.models.parameter_models import stock_to_buy, SellStockReq
 router = APIRouter(
     prefix = '/trade'
 )
-class buyResp(): #응답모델
-    login_id: str
-    access_token: str
-    stock_code : int
-    quantity: int
 
 @router.post("/buy") #req: 수량, 금액, 주식 코드, 
 def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authorization: str =Header(None)):
@@ -68,7 +63,6 @@ def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: st
 
     '''토큰인증'''
 
-    
     if not authorization:
         raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
     token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
@@ -77,7 +71,6 @@ def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: st
     if not user:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
     
-
     '''mystocks db의 내 보유주식 수량 차감'''
     # 보유주식 확인
     mystock = db.query(MyStocks).filter(
@@ -110,6 +103,3 @@ def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: st
     return {
         'msg' : '매도 성공'
     }
-
-
-
