@@ -160,14 +160,13 @@
         updateTime(); // 페이지 로드 시 시간 업데이트
         
         document.getElementById("give-up").addEventListener("click", async function(event) {
-            const token = localStorage.getItem("access_token");  // 예: 로컬스토리지에서 토큰 가져오기
-            const reponse = await fetch('/gg', {
+            const token = localStorage.getItem("token");  // 예: 로컬스토리지에서 토큰 가져오기
+            const response = await fetch('/gg', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
             });
-
             if (response.ok) {
                 window.location.href = '/front/index';  // 로그인 페이지로 리다이렉트
             } else {
