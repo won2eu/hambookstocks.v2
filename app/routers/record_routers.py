@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from app.models.parameter_models import *
 from app.models.user_models import User 
 from app.dependencies.db import get_db_session 
@@ -39,3 +39,21 @@ def record(limit: int=5, db=Depends(get_db_session)):
     ]
 
     return {"message": "조회 성공", "rankings": rankings}
+
+
+# 자기 돈 get 하기
+@router.get('/my/balance') 
+def get_my_balance(db=Depends(get_db_session), authorization: str=Header(None)):
+    if not authorization:
+        raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
+    
+    token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
+    # table에 해당 토큰이 있는지 확인
+    user = db.query(User).filter(User.access_token == token).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return {"message": "잔액 조회 성공", "balance": user.balance}
