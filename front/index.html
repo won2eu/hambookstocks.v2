@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
     
-    <title>주식투자게임</title>
+    <title>햄북Stocks</title>
     
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/templatemo-grad-school.css">
@@ -20,7 +20,7 @@
     <!-- 헤더 -->
     <header class="main-header clearfix">
         <div class="logo">
-            <a><em>주식투자</em> 게임</a>
+            <a>햄북<em>Stocks</em></a>
         </div>
         <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
         <nav id="menu" class="main-nav">
@@ -41,7 +41,7 @@
                     <!-- 왼쪽 배너 콘텐츠 -->
                     <div class="col-md-7">
                         <div class="caption">
-                            <h2><em>주식투자</em> 게임</h2>
+                            <h2>햄북<em>Stokcs</em></h2>
                             <div class="main-button">
                                 <div class="scroll-to-section"><a id="game-start" style="cursor: pointer;">게임 시작</a></div>
                             </div>
@@ -284,6 +284,7 @@
             document.querySelector(`.item${i+1} .down-content h4`).innerHTML = 
               `${i+1}등 : ${data["rankings"][i].login_id} <br> ${data["rankings"][i].balance}원`;
           }
+          console.log(data)
         })
         .catch(error => console.error("❌ 명예의 전당 업데이트 오류:", error));
     }
