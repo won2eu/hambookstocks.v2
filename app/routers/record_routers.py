@@ -26,7 +26,7 @@ def plus_balance(login_id: str, money: float, db=Depends(get_db_session)):
 
 # 명예의 전당
 @router.get('/record')
-def record(limit: int=5, db=Depends(get_db_session)): 
+def record(limit: int=10, db=Depends(get_db_session)): 
     users = db.exec(
         select(User).order_by(desc(User.balance)).limit(limit)  
     ).all()
