@@ -184,7 +184,7 @@
 	 * @public
 	 */
 	Owl.Defaults = {
-		items: 3,
+		items: 10,
 		loop: false,
 		center: false,
 		rewind: false,
@@ -2719,10 +2719,11 @@
 	 */
 	Autoplay.Defaults = {
 		autoplay: false,
-		autoplayTimeout: 5000,
+		autoplayTimeout: 2000	,
 		autoplayHoverPause: false,
 		autoplaySpeed: false
 	};
+	
 
 	/**
 	 * Transition to the next slide and set a timeout for the next transition.
@@ -3446,3 +3447,4 @@
 	}
 
 })(window.Zepto || window.jQuery, window, document);
+
