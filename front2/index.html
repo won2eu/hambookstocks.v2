@@ -50,8 +50,8 @@
                                     </tr>
                                 </thead>
                                 <tbody id="stock-table-body">
-                                    <tr><td><a href="#" class="stock-code-link">005930</a></td><td>삼성전자</td><td>3000</td></tr>
-                                    <tr><td><a href="#" class="stock-code-link">000660</a></td><td>SK하이닉스</td><td>2000</td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">005930</a></td><td>삼성전자</td><td></td></tr>
+                                    <tr><td><a href="#" class="stock-code-link">000660</a></td><td>SK하이닉스</td><td></td></tr>
                                     <tr><td><a href="#" class="stock-code-link">005380</a></td><td>현대자동차</td><td></td></tr>
                                     <tr><td><a href="#" class="stock-code-link">000270</a></td><td>기아</td><td></td></tr>
                                     <tr><td><a href="#" class="stock-code-link">005490</a></td><td>POSCO홀딩스</td><td></td></tr>
@@ -339,12 +339,13 @@
                 }
 
                 // 📌 [STEP 1] 보유 주식 목록 가져오기 (mystocks API에서 받은 데이터 사용)
-                const ownedStocks = new Set(); // 내가 가진 주식 코드 저장
-                myStockRows.forEach(row => {
+                const ownedStocks = new Set();
+                
+                Array.from(myStockRows).forEach(row => { // HTMLCollection을 배열로 변환 후 forEach 사용
                     const stockNameCell = row.cells[0]; // 첫 번째 컬럼 (주식명)
                     const stockName = stockNameCell.textContent.trim();
                     if (stockName) {
-                        ownedStocks.add(stockName); // 보유한 주식 목록 추가
+                        ownedStocks.add(stockName);
                     }
                 });
 
@@ -353,27 +354,27 @@
                 const stockRows = stockTable.getElementsByTagName("tr");
 
                 for (let row of stockRows) {
-                    const stockCode = row.cells[0].textContent.trim();
-                    const stockName = row.cells[1].textContent.trim();
-                    stockMap[stockCode] = stockName;
+                    const stockCode = row.cells[0].textContent.trim(); // 첫 번째 열: 주식 코드
+                    const stockName = row.cells[1].textContent.trim(); // 두 번째 열: 주식명
+                    stockMap[stockName] = stockCode; // 주식명 → 주식 코드 매핑
                 }
 
-                // 📌 [STEP 3] 보유 주식만 my-stock-table에 실시간 가격 업데이트
+                // 📌 [STEP 3] 보유 주식의 실시간 가격 업데이트
                 for (let row of myStockRows) {
                     const stockNameCell = row.cells[0]; // 첫 번째 컬럼 (주식명)
                     const stockPriceCell = row.cells[1]; // 두 번째 컬럼 (현재가)
 
                     const stockName = stockNameCell.textContent.trim();
-
-                    if (ownedStocks.has(stockName)) { // 내가 가진 주식인지 확인
-                        for (let stockCode in stockMap) {
-                            if (stockMap[stockCode] === stockName && stockCode in stockPrices) {
-                                stockPriceCell.textContent = stockPrices[stockCode]; // 현재가 업데이트
-                            }
-            }
-        }
-    }
+                    
+                    if (ownedStocks.has(stockName)) { // 보유한 주식인지 확인
+                        const stockCode = stockMap[stockName]; // 해당 주식명의 주식 코드 가져오기
+                        if (stockCode && stockCode in stockPrices) { // 실시간 가격 정보가 있는 경우
+                            stockPriceCell.textContent = stockPrices[stockCode]; // 현재가 업데이트
+                        }
+                    }
+                }
 }
+
         </script>
 
         <script>
