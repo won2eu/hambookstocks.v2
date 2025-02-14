@@ -112,37 +112,37 @@
                 <h4>3등</h4>
               </div>
             </div>
-            <div class="item">
+            <div class="item4">
               <div class="down-content">
                 <h4>4등</h4>
               </div>
             </div>
-            <div class="item">
+            <div class="item5">
               <div class="down-content">
                 <h4>5등</h4>
               </div>
             </div>
-            <div class="item">
+            <div class="item6">
               <div class="down-content">
                 <h4>6등</h4>
               </div>
             </div>
-            <div class="item">
+            <div class="item7">
               <div class="down-content">
                 <h4>7등</h4>
               </div>
             </div>
-            <div class="item">
+            <div class="item8">
               <div class="down-content">
                 <h4>8등</h4>
               </div>
             </div>
-            <div class="item">
+            <div class="item9">
               <div class="down-content">
                 <h4>9등</h4>
               </div>
             </div>
-            <div class="item">
+            <div class="item10">
               <div class="down-content">
                 <h4>10등</h4>
               </div>
@@ -260,10 +260,27 @@
             document.querySelector(`.item${i+1} .down-content h4`).innerHTML = `${i+1}등 : ${data["rankings"][i].login_id} <br> ${data["rankings"][i].balance}원`;
           }
         })
+      // 📌 10초마다 자동 실행 (10000ms = 10초)
+      setInterval(updateRankings, 5000);
+
       document.addEventListener("scroll", function () {
         updateRankings();
       });
+      // 첫화면 들어가자 말자 명예의전당 업데이트 해주기기
+      updateRankings();
     };
+
+    function updateRankings() {
+      fetch('/record') // 최신 데이터를 다시 가져옴
+        .then(response => response.json()) 
+        .then(data => {
+          for (let i = 0; i < data["rankings"].length; i++) {
+            document.querySelector(`.item${i+1} .down-content h4`).innerHTML = 
+              `${i+1}등 : ${data["rankings"][i].login_id} <br> ${data["rankings"][i].balance}원`;
+          }
+        })
+        .catch(error => console.error("❌ 명예의 전당 업데이트 오류:", error));
+    }
 
     </script>
     
