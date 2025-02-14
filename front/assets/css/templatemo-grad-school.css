@@ -817,6 +817,9 @@ section.courses {
     padding: 0px 30px 100px 30px;
 }
 
+
+
+
 section.courses .item img {
     border-radius: 5px;
     border-radius: 5px;
@@ -844,14 +847,26 @@ section.courses .item3 .down-content {
   border-radius: 5px;
 }
 
-section.courses .item .down-content {
+section.courses .item4 .down-content,
+section.courses .item5 .down-content,
+section.courses .item6 .down-content,
+section.courses .item7 .down-content,
+section.courses .item8 .down-content,
+section.courses .item9 .down-content,
+section.courses .item10 .down-content {
     padding: 50px;
     background-color: #fff;
     border-radius: 5px;
     border-radius: 5px;
 }
 
-section.courses .item .down-content h4 {
+section.courses .item4 .down-content h4,
+section.courses .item5 .down-content h4,
+section.courses .item6 .down-content h4,
+section.courses .item7 .down-content h4,
+section.courses .item8 .down-content h4,
+section.courses .item9 .down-content h4,
+section.courses .item10 .down-content h4 {
     font-size: 16px;
     text-transform: uppercase;
     color: #1e1e1e;
@@ -859,18 +874,6 @@ section.courses .item .down-content h4 {
     font-weight: 700;
     margin-top: 0px;
     margin-bottom: 20px;
-}
-
-section.courses .item .down-content p {
-    margin-bottom: 25px;
-}
-
-section.courses .item .down-content img {
-    width: 40px;
-    border: 2px solid #f5a425;
-    border-radius: 50%;
-    text-align: left;
-    display: inline-block;
 }
 
 section.courses .owl-carousel .owl-nav {
