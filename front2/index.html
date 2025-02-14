@@ -668,48 +668,55 @@
         </script>
 
         <script>
+            let unitPrice = 0;
+            let selectedRow = null;
+
+            // 주식 코드 클릭 -> 종목명, 현재가, 수량 기준 가격 설정
             document.querySelectorAll('.stock-code-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
 
-                const clickedLink = e.target;
-                const row = clickedLink.closest('tr');
-                const stockName = row.cells[1].innerText; // 주식 이름 가져오기
-                const price = row.cells[2].innerText; // 체결가 가져오기
+                    const clickedLink = e.target;
+                    selectedRow = clickedLink.closest('tr'); // 선택한 행 기억해두기
+                    const stockName = selectedRow.cells[1].innerText;
 
-                document.getElementById('stock-name-display').innerText = `종목 이름 : ${stockName}`;
+                    // 현재가 가져오기
+                    const priceText = selectedRow.cells[2].innerText.trim();
+                    unitPrice = priceText === '' ? 0 : parseInt(priceText.replace(/,/g, ''));
 
-                // 가격 칸에 체결가 자동 반영
-                const priceInput = document.getElementById('price');
-                priceInput.value = price.replace(/,/g, ''); // 쉼표 제거해서 숫자로 넣기
+                    // 종목명 및 초기 가격 세팅
+                    document.getElementById('stock-name-display').innerText = `종목 이름 : ${stockName}`;
+
+                    // 수량 가져와서 가격 계산
+                    const quantity = parseInt(document.getElementById('quantity').value) || 1;
+                    document.getElementById('price').value = unitPrice * quantity;
+                });
             });
-        });
-        let unitPrice = 0; 
 
-        document.querySelectorAll('.stock-code-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
+            // 수량 입력 변경 시 가격 업데이트
+            document.getElementById('quantity').addEventListener('input', function () {
+                const quantity = parseInt(this.value) || 0;
+                const totalPrice = unitPrice * quantity;
+                document.getElementById('price').value = totalPrice;
+            });
 
-                const clickedLink = e.target;
-                const row = clickedLink.closest('tr');
-                const stockName = row.cells[1].innerText;
-                const priceText = row.cells[2].innerText.trim();
+            // 현재가가 실시간으로 바뀌는지 감지하는 MutationObserver 활용 (이게 핵심)
+            const priceObserver = new MutationObserver(() => {
+                if (!selectedRow) return; // 선택된 주식이 없으면 패스
 
-                document.getElementById('stock-name-display').innerText = `종목 이름 : ${stockName}`;
-
-                // 주당 가격 저장 (쉼표 제거 후 숫자로 변환)
+                const priceText = selectedRow.cells[2].innerText.trim();
                 unitPrice = priceText === '' ? 0 : parseInt(priceText.replace(/,/g, ''));
 
-                // 초기에는 수량 1 기준으로 가격칸 설정
+                // 현재 선택한 수량 가져와서 가격 업데이트
                 const quantity = parseInt(document.getElementById('quantity').value) || 1;
                 document.getElementById('price').value = unitPrice * quantity;
             });
-        });
-        document.getElementById('quantity').addEventListener('input', function () {
-            const quantity = parseInt(this.value) || 0;
-            const totalPrice = unitPrice * quantity;
-            document.getElementById('price').value = totalPrice;
-        });
+
+            // 주식 현재가(td) 변경 감지 시작
+            document.querySelectorAll('tr td:nth-child(3)').forEach(td => {
+                priceObserver.observe(td, { childList: true, subtree: true, characterData: true });
+            });
+
         </script>
 
 </body>
