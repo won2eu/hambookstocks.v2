@@ -284,7 +284,6 @@
             document.querySelector(`.item${i+1} .down-content h4`).innerHTML = 
               `${i+1}등 : ${data["rankings"][i].login_id} <br> ${data["rankings"][i].balance}원`;
           }
-          console.log(data)
         })
         .catch(error => console.error("❌ 명예의 전당 업데이트 오류:", error));
     }
