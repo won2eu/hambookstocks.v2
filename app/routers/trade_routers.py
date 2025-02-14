@@ -3,14 +3,14 @@ from sqlalchemy.orm import Session
 from app.dependencies.db import get_db_session
 from app.models.user_models import User
 from app.models.mystocks_models import MyStocks
-from app.models.parameter_models import stock_to_buy, SellStockReq
+from app.models.parameter_models import stock_to_buy_and_sell
 
 router = APIRouter(
     prefix = '/trade'
 )
 
 @router.post("/buy") #req: 수량, 금액, 주식 코드, 
-def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authorization: str =Header(None)):
+def buy_stock(req: stock_to_buy_and_sell, db: Session = Depends(get_db_session), authorization: str =Header(None)):
 
     if not authorization:
         raise HTTPException(status_code=401, detail="로그인하셔야 합니다.")
@@ -22,7 +22,7 @@ def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authoriz
     
     # 토큰 인증은 끝
     # 2. 돈이 있는지 없는지 확인하자자
-    total_price = req.stock_price * req.quantity
+    total_price = req.stock_price
     if user.balance < total_price:
         raise HTTPException(status_code=400, detail="잔액이 부족합니다.")
     
@@ -48,7 +48,7 @@ def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authoriz
             stock_code=req.stock_code,
             quantity=req.quantity,
             access_token= user.access_token,
-            avg_price = req.stock_price
+            avg_price = req.stock_price / req.quantity
         )
         db.add(new_stock)
     db.commit()
@@ -59,7 +59,7 @@ def buy_stock(req: stock_to_buy, db: Session = Depends(get_db_session), authoriz
 
 
 @router.post('/sell')
-def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: str = Header(None)):
+def sell_order(req: stock_to_buy_and_sell, db = Depends(get_db_session),authorization: str = Header(None)):
 
     '''토큰인증'''
 
@@ -90,13 +90,16 @@ def sell_order(req: SellStockReq, db = Depends(get_db_session),authorization: st
     elif mystock.quantity == req.quantity:
         db.delete(mystock)
 
-    db.commit()
-    #   db.refresh(MyStocks)  
 
+    else:
+        raise HTTPException(status_code=401, detail="너무 많아요")
+    
+
+
+    db.commit()
 
     '''현재 가치 불러와서 user db의 잔고에 돈 추가'''
-    total_earned = req.current_price * req.quantity
-    
+    total_earned = req.stock_price
     db.query(User).filter(User.id == user.id).update({"balance": User.balance + total_earned})
     db.commit()
 

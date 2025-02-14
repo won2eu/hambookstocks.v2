@@ -1,6 +1,6 @@
 body {
   font-family: 'Source Sans Pro', sans-serif;
-  background-color: #f8f9fa;
+  background-color: #172238;
   color: #333;
 }
 
@@ -14,6 +14,7 @@ body {
   width: 100%;
   height: 450px; /* 그래프 높이 적당히 설정 */
 }
+
 
 .middle-body .panel {
   height: auto; /* 고정 높이 없애기 */
@@ -254,12 +255,12 @@ button {
 }
 
 #buy {
-  background-color: #dc3545;
+  background-color: #28a745;
   color: white;
 }
 
 #sell {
-  background-color: #28a745;
+  background-color: #dc3545;
   color: white;
 }
 

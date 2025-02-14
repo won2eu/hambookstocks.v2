@@ -16,13 +16,7 @@ class AuthResp(BaseModel):
     user: User
     access_token: str | None = None
 
-class stock_to_buy(BaseModel): #req 클래스
+class stock_to_buy_and_sell(BaseModel): #req 클래스
     stock_code: str
     stock_price: int | None = None
     quantity: int
-
-class SellStockReq(BaseModel):
-    stock_code: str     
-    quantity: int      
-    access_token: str
-    current_price: int
