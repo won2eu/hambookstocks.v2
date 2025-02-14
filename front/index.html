@@ -170,6 +170,12 @@
     <script src="assets/js/slick-slider.js"></script>
     <script src="assets/js/custom.js"></script>
     <script>
+
+      window.onpageshow = function(event){
+      if (event.persisted || (window.performance && window.performance.navigation.type == 2)){
+          window.location.reload();
+        }
+      };
       document.getElementById("game-start").addEventListener("click", async function(event) {
         const token = localStorage.getItem("token");
         if (token) {
