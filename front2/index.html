@@ -193,7 +193,7 @@
             let stockHistory = {};
             let chart = null;
 
-            const socket = new WebSocket("ws://localhost:8000/ws/stocks"); //웹소켓 연결
+            const socket = new WebSocket("ws://54.180.26.164/ws/stocks"); //웹소켓 연결
 
             socket.onopen = function () {
                 console.log("✅ WebSocket 연결 성공!");
