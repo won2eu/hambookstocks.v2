@@ -17,7 +17,7 @@ document.getElementById('signup-form').addEventListener('submit', function (e) {
       pwd: password
     };
   
-    fetch('http://localhost:8000/auth/register', {
+    fetch('/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
