@@ -16,7 +16,7 @@ document.getElementById('signup-form').addEventListener('submit', function (e) {
       login_id: loginId,
       pwd: password
     };
-  
+  // 주석 변경 실험 입니다
     fetch('/auth/register', {
       method: 'POST',
       headers: {
