@@ -1,5 +1,5 @@
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware #CORS, MIDDLE WARE ì¡°í•„1
+from fastapi import FastAPI # FAST API IMPORT
 from app.dependencies.db import *
 from app.routers import (trade_routers,auth_routers, record_routers, mystocks_routers, stock_routers, set_page_routers)
 from fastapi.staticfiles import StaticFiles
@@ -8,155 +8,23 @@ create_db_and_table()
 
 app = FastAPI()
 
-# ? CORS ¼³Á¤ Ãß°¡
-app.add_middleware(
+app.add_middleware( #CORS MIDDLE WARE ì¡°í•„1
     CORSMiddleware,
-    allow_origins=["*"],  # ¸ğµç µµ¸ŞÀÎ Çã¿ë (¹èÆ÷ ½Ã¿¡´Â Æ¯Á¤ µµ¸ŞÀÎÀ¸·Î Á¦ÇÑ)
+    allow_origins=["*"],  
     allow_credentials=True,
-    allow_methods=["*"],  # ¸ğµç HTTP ¸Ş¼­µå Çã¿ë
-    allow_headers=["*"],  # ¸ğµç Çì´õ Çã¿ë
+    allow_methods=["*"], 
+    allow_headers=["*"],
 )
 
-# ÇÁ·ĞÆ® ¿¬°á
-app.mount("/front/assets", StaticFiles(directory="front/assets"), name="assets")
+
+app.mount("/front/assets", StaticFiles(directory="front/assets"), name="assets") #STATICFILES ì¡°í•„2
 app.mount("/front/vendor", StaticFiles(directory="front/vendor"), name="vendor")
 app.mount("/front2/assets", StaticFiles(directory="front2/assets"), name="assets")
 
 
-app.include_router(mystocks_routers.router)
+app.include_router(mystocks_routers.router) #ROUTER ì—°ê²°
 app.include_router(auth_routers.router)
 app.include_router(record_routers.router)
 app.include_router(stock_routers.router)
 app.include_router(trade_routers.router)
 app.include_router(set_page_routers.router)
-
-
-
-# from fastapi.middleware.cors import CORSMiddleware
-# from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-# from app.dependencies.db import *
-# from app.routers import auth_routers, record_routers, mystocks_routers, stock_routers
-# from fastapi.responses import HTMLResponse, RedirectResponse
-# from fastapi.staticfiles import StaticFiles
-# from pydantic import BaseModel
-# import os
-# import asyncio
-# import random
-# import datetime
-
-# # FastAPI ¾ÖÇÃ¸®ÄÉÀÌ¼Ç ÃÊ±âÈ­
-# app = FastAPI()
-
-# create_db_and_table()
-# put_temp_data()  # ÀÓ½Ã µ¥ÀÌÅÍ Ãß°¡
-
-# # ? CORS ¼³Á¤ Ãß°¡
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],  # ¸ğµç µµ¸ŞÀÎ Çã¿ë (¹èÆ÷ ½Ã¿¡´Â Æ¯Á¤ µµ¸ŞÀÎÀ¸·Î Á¦ÇÑ)
-#     allow_credentials=True,
-#     allow_methods=["*"],  # ¸ğµç HTTP ¸Ş¼­µå Çã¿ë
-#     allow_headers=["*"],  # ¸ğµç Çì´õ Çã¿ë
-# )
-
-# # ? ÇÁ·ĞÆ®¿£µå ÆÄÀÏ Á¦°ø
-# app.mount("/front/assets", StaticFiles(directory="front/assets"), name="assets")
-# app.mount("/front/vendor", StaticFiles(directory="front/vendor"), name="vendor")
-# app.mount("/front2/assets", StaticFiles(directory="front2/assets"), name="assets")
-
-# # ? API ¶ó¿ìÅÍ Ãß°¡
-# app.include_router(mystocks_routers.router)
-# app.include_router(auth_routers.router)
-# app.include_router(record_routers.router)
-# app.include_router(stock_routers.router)
-
-# # ? ±âº» ÆäÀÌÁö ¶ó¿ìÆ®
-# @app.get("/", response_class=RedirectResponse)
-# async def root():
-#     return RedirectResponse(url="/front/index")
-
-# @app.get("/front/{page_name}", response_class=HTMLResponse)
-# async def get_page(page_name: str = "index"):
-#     page_path = f"front/{page_name}.html"
-#     if os.path.exists(page_path):
-#         with open(page_path, "r", encoding="utf-8") as file:
-#             content = file.read()
-#         return HTMLResponse(content=content)
-#     else:
-#         return HTMLResponse(content="ÆäÀÌÁö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.", status_code=404)
-
-# @app.get("/front2/{page_name}", response_class=HTMLResponse)
-# async def get_page(page_name: str = "index"):
-#     page_path = f"front2/{page_name}.html"
-#     if os.path.exists(page_path):
-#         with open(page_path, "r", encoding="utf-8") as file:
-#             content = file.read()
-#         return HTMLResponse(content=content)
-#     else:
-#         return HTMLResponse(content="ÆäÀÌÁö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.", status_code=404)
-
-
-# ############################################## ? ½Ç½Ã°£ ¸ğÀÇ Å×½ºÆ® À¥¼ÒÄÏ ###################################
-
-# # Å×½ºÆ®ÇÒ ÁÖ½Ä Á¾¸ñ ¸®½ºÆ®
-# STOCK_CODES = [
-#     "005930",  # »ï¼ºÀüÀÚ
-#     "000660",  # SKÇÏÀÌ´Ğ½º
-#     "005380",  # Çö´ëÀÚµ¿Â÷
-#     "000270",  # ±â¾Æ
-#     "005490",  # POSCOÈ¦µù½º
-#     "012450",  # ÇÑÈ­¿¡¾î·Î½ºÆäÀÌ½º
-#     "403870",  # HPSP
-#     "042700",  # ÇÑ¹Ì¹İµµÃ¼
-#     "086520",  # ¿¡ÄÚÇÁ·Î
-#     "247540",  # ¿¡ÄÚÇÁ·Îºñ¿¥
-#     "066970",  # ¿¤¾Ø¿¡ÇÁ
-#     "278280",  # Ãµº¸
-#     "253590",  # ³×¿À¼À
-#     "348370",  # ¿£ÄÍ
-#     "028300",  # HLB
-#     "196170",  # ¾ËÅ×¿ÀÁ¨
-#     "092870",  # ¿¢½ÃÄÜ
-#     "000250",  # »ïÃµ´çÁ¦¾à
-#     "095610",  # Å×½º
-#     "210980"   # SKµğ¾Øµğ
-# ]
-
-# # ÁÖ½Ä ÀÀ´ä ¸ğµ¨
-# class StockPriceResponse(BaseModel):
-#     stock_code: str
-#     timestamp: str  # HHMMSS Çü½Ä
-#     current_price: int  # Á¤¼ö °¡°İ
-
-# # ? À¥¼ÒÄÏ ÇÚµé·¯ Ãß°¡
-# @app.websocket("/ws/stocks/1")
-# async def websocket_stock_prices(websocket: WebSocket):
-#     """Å¬¶óÀÌ¾ğÆ®°¡ ¿¬°áµÇ¸é 1ÃÊ¸¶´Ù ·£´ı ÁÖ½Ä µ¥ÀÌÅÍ¸¦ º¸³¿ (°¡²û µ¥ÀÌÅÍ ´©¶ô Æ÷ÇÔ)"""
-    
-#     await websocket.accept()  # À¥¼ÒÄÏ ¿¬°á ¼ö¶ô
-
-#     try:
-#         while True:
-#             stock_data_list = []
-
-#             # ·£´ıÇÏ°Ô ¸î °³ µ¥ÀÌÅÍ¸¦ Á¦¿Ü (ÃÖ´ë 9°³±îÁö ºüÁú ¼ö ÀÖÀ½)
-#             missing_count = 19 #random.randint(0, 9)
-#             selected_stocks = random.sample(STOCK_CODES, len(STOCK_CODES) - missing_count)
-
-#             for stock_code in selected_stocks:
-#                 stock_price = 9999  # 5¸¸~20¸¸ ¿ø »çÀÌ ·£´ı °¡°İ
-#                 timestamp = datetime.datetime.now().strftime("%H%M%S")  # HHMMSS Çü½Ä
-
-#                 stock_response = StockPriceResponse(
-#                     stock_code=stock_code,
-#                     timestamp=timestamp,
-#                     current_price=stock_price,
-#                 )
-#                 stock_data_list.append(stock_response.dict())
-
-#             # JSON µ¥ÀÌÅÍ Àü¼Û
-#             await websocket.send_json(stock_data_list)
-#             await asyncio.sleep(1)  # 1ÃÊ ´ÜÀ§·Î ¾÷µ¥ÀÌÆ®
-
-#     except WebSocketDisconnect:
-#         print("? Å¬¶óÀÌ¾ğÆ® ¿¬°á Á¾·á")
