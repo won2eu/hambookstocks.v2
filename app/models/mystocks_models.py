@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field # SQLModel 조필3
 
 class MyStocks(SQLModel, table=True):
     __tablename__ = "MyStocks"

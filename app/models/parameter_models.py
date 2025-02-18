@@ -1,6 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel # BaseModel 조필4
 from app.models.user_models import User
-from typing import List
 
 class AuthSigninReq(BaseModel):
     login_id: str
