@@ -16,8 +16,8 @@ document.getElementById('signup-form').addEventListener('submit', function (e) {
       login_id: loginId,
       pwd: password
     };
-  
-    fetch('http://localhost:8000/auth/register', {
+  // 주석 변경 실험 입니다!!!!!!
+    fetch('/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

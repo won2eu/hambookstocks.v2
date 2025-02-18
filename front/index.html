@@ -41,7 +41,7 @@
                     <!-- 왼쪽 배너 콘텐츠 -->
                     <div class="col-md-7">
                         <div class="caption">
-                            <h2>햄북<em>Stokcs</em></h2>
+                            <h2>햄북<em>Stocks</em></h2>
                             <div class="main-button">
                                 <div class="scroll-to-section"><a id="game-start" style="cursor: pointer;">게임 시작</a></div>
                             </div>
@@ -179,7 +179,7 @@
       document.getElementById("game-start").addEventListener("click", async function(event) {
         const token = localStorage.getItem("token");
         if (token) {
-          const response = await fetch("http://127.0.0.1:8000/auth/check-token", {  // FastAPI 로그아웃 엔드포인트
+          const response = await fetch("/auth/check-token", {  // FastAPI 로그아웃 엔드포인트
               method: "POST",
               headers: {
                   "Authorization": `Bearer ${token}`
@@ -202,7 +202,7 @@
         if (loginButton.innerHTML === "로그인") {
           const login_id = document.getElementById("ID").value;
           const pwd = document.getElementById("password").value;
-          const response = await fetch("http://127.0.0.1:8000/auth/login", {  // FastAPI 로그인 엔드포인트
+          const response = await fetch("/auth/login", {  // FastAPI 로그인 엔드포인트
               method: "POST",
               headers: {
                   "Content-Type": "application/json"
@@ -229,7 +229,7 @@
           const token = localStorage.getItem("token");
 
           if (token) {
-              const response = await fetch("http://127.0.0.1:8000/auth/logout", {  // FastAPI 로그아웃 엔드포인트
+              const response = await fetch("/auth/logout", {  // FastAPI 로그아웃 엔드포인트
                   method: "POST",
                   headers: {
                       "Authorization": `Bearer ${token}`
