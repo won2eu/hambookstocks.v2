@@ -1,13 +1,13 @@
 from sqlmodel import(
-    SQLModel, Session, create_engine, text)
+    SQLModel, Session, create_engine) #조필6 - Session
 
 DB_URL = 'sqlite:///db.db'
 
 DB_CONN_ARGS = {
-    "check_same_thread": False
+    "check_same_thread": False 
 }
 
-DB_ENGINE = create_engine(
+DB_ENGINE = create_engine( #조필7
     DB_URL, connect_args=DB_CONN_ARGS
 )
 
