@@ -10,7 +10,7 @@ document.getElementById('signup-form').addEventListener('submit', function (e) {
       alert("비밀번호가 일치하지 않습니다.");
       return;
     }
-  
+
     const userData = {
       name: username,
       login_id: loginId,
