@@ -79,16 +79,15 @@
 
 #         if uq_time_price.get(stock_time, None) is None:
 #             uq_time_price[stock_time] = stock_price
-            
+
 #             # print("#### 주식체결 ####")
 #             # print(f"주식체결시간[{stock_time}] 주식현재가[{stock_price}]")
 #             return {
-#                 'stock_time': stock_time, 
+#                 'stock_time': stock_time,
 #                 'stock_price': str(int(stock_price)/int(data_cnt))
 #             }
-            
-#     return None
 
+#     return None
 
 
 # def stocksigningnotice(data, key, iv):
