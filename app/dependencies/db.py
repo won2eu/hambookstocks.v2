@@ -1,10 +1,10 @@
-from sqlmodel import SQLModel, Session, create_engine  # 조필6 - Session
+from sqlmodel import SQLModel, Session, create_engine
 
-DB_URL = "sqlite:///db.db"
+# DB_URL = "sqlite:///db.db"
 
-DB_CONN_ARGS = {"check_same_thread": False}
+# DB_CONN_ARGS = {"check_same_thread": False}
 
-DB_ENGINE = create_engine(DB_URL, connect_args=DB_CONN_ARGS)  # 조필7
+# DB_ENGINE = create_engine(DB_URL, connect_args=DB_CONN_ARGS)  # 조필7
 
 
 def get_db_session():

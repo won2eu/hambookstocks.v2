@@ -7,5 +7,4 @@ class User(SQLModel, table=True):
     login_id: str = Field(index=True)
     pwd: str = Field(default=None, exclude=True)  # 조필5
     name: str
-    access_token: str | None = None
-    balance: float = Field(default=0.0)
+    balance: float = Field(default=0.0)  # foriegn key 적용
