@@ -1,0 +1,36 @@
+.rank-slider-section {
+    background-color: #ffffff;
+  }
+  
+.rank-card {
+    background-color: rgba(186, 202, 215, 0.5);
+    border-radius: 12px;
+    width: 500px; /* 적당한 카드 크기 */
+    height: 300px; /* 높이 추가해서 균형 맞춤 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccd6dd; /* 테두리 살짝 주면 깔끔 */
+    text-align: center;
+    
+  }
+  
+  .rank-card h3 {
+    margin: 0;
+    font-size: 50px;
+    color: #2d3748;
+  }
+  
+  .rank-card p {
+    font-size: 40px;
+    color: #4a5568;
+    margin: 4px 0;
+  }
+  
+  .rank-slider-section .swiper {
+    width: 100%;          /* 혹은 80%, 1200px, 원하는 값으로 조절 */
+    max-width: 1900px;    /* 화면이 엄청 큰 경우를 대비해 최대 너비 제한 */
+    margin: 0 auto;       /* 가운데 정렬 */
+  }
+  

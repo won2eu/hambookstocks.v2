@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, Header
 from app.models.parameter_models import *
 from app.models.user_models import User
 from app.dependencies.db import *
+from app.dependencies.redis_db import *
 from app.dependencies.jwt_utils import JWTUtil
 from app.services.auth_service import AuthService
 from app.services.redis_service import RedisService
 from app.dependencies.redis_db import get_redis
-
 from typing import Annotated
 from sqlmodel import select
 
@@ -21,7 +21,10 @@ def register(
 ):
     existing_user = (
         db.query(User).filter(User.login_id == req.login_id).first()
-    )  # 이미 존재하는 회원인지 확인인
+    )  # 이미 존재하는 회원인지 확인하는 것
+    existing_email = db.exec(
+        select(User).where(User.email == req.email)
+    ).first()  # 이미 존재하는 이메일인지 확인하는 것
 
     existing_email = db.exec(select(User).where(User.email == req.email)).first()
     if existing_user:
@@ -78,6 +81,7 @@ async def auth_logout(
     token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
 
     await redisService.delete_token(redis_db, token)
+
     return {"message": "로그아웃 되었습니다."}
 
 

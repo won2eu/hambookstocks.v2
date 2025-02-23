@@ -14,7 +14,7 @@ BALANCE = 1000000
 class AuthService:
     def get_hashed_pwd(self, pwd: str) -> str:
         encoded_pwd = pwd.encode("utf-8")
-        salt = bcrypt.gensalt()  # 조필13
+        salt = bcrypt.gensalt()
         return bcrypt.hashpw(encoded_pwd, salt)
 
     def verify_pwd(self, pwd: str, hpwd: str) -> bool:

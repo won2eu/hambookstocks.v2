@@ -16,6 +16,13 @@ create_db_and_table()
 
 app = FastAPI()
 
+app.add_middleware(  # CORS MIDDLE WARE
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.mount(
     "/front/assets", StaticFiles(directory="front/assets"), name="assets"

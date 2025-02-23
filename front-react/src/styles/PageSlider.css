@@ -1,0 +1,54 @@
+.page-container {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - 60px);
+    border: none;
+    overflow: visible;
+    background-color: #f9f9f9;
+  }
+  
+  .page-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    background-color: #e0e0e0;
+    min-height: calc(100vh - 60px);
+  }
+  
+  .fade-enter {
+    opacity: 0;
+  }
+  .fade-enter-active {
+    opacity: 1;
+    transition: opacity 500ms;
+  }
+  .fade-exit {
+    opacity: 1;
+  }
+  .fade-exit-active {
+    opacity: 0;
+    transition: opacity 500ms;
+  }
+  
+  .next-button {
+    position: absolute;
+    top: 950px; 
+    right: 270px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1000;
+
+    opacity: 0.3;
+  }
+  
+  .next-button img {
+    width: 100px;
+    height: 100px;
+  }
+  

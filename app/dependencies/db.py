@@ -10,6 +10,7 @@ HOST = os.environ.get("MYSQL_HOST")
 PORT = os.environ.get("MYSQL_PORT")
 DBNAME = os.environ.get("MYSQL_DBNAME")
 
+
 DB_URL = f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
 
 DB_ENGINE = create_engine(DB_URL, echo=True)
