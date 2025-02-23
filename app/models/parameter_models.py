@@ -11,6 +11,7 @@ class AuthSignupReq(BaseModel):
     login_id: str
     pwd: str
     name: str
+    email: str
 
 
 class AuthResp(BaseModel):
