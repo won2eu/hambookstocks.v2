@@ -19,17 +19,26 @@ class AuthService:
 
     def verify_pwd(self, pwd: str, hpwd: str) -> bool:
         encoded_pwd = pwd.encode("utf-8")
+        hpwd = hpwd.encode("utf-8")
         return bcrypt.checkpw(password=encoded_pwd, hashed_password=hpwd)
 
     # 3. 회원가입때 DB 로직 구현
     # 1번의 password 암호화 함수를 이용하여 암호화된 패스워드를 User.pwd에 넣는다
     # DB에 user를 넣는다.
 
-    def signup(self, db: Session, login_id: str, pwd: str, name: str) -> User | None:
+    def signup(
+        self, db: Session, login_id: str, pwd: str, name: str, email: str
+    ) -> User | None:
         try:
             hashed_pwd = self.get_hashed_pwd(pwd)
 
-            user = User(login_id=login_id, pwd=hashed_pwd, name=name, balance=BALANCE)
+            user = User(
+                login_id=login_id,
+                pwd=hashed_pwd,
+                name=name,
+                balance=BALANCE,
+                email=email,
+            )
             db.add(user)
             db.commit()
             db.refresh(user)
@@ -61,10 +70,10 @@ class AuthService:
         return dbUser
 
 
-if __name__ == "__main__":
-    authService = AuthService()
-    hashedPwd = authService.get_hashed_pwd("1234")
-    print(hashedPwd)
+# if __name__ == "__main__":
+#     authService = AuthService()
+#     hashedPwd = authService.get_hashed_pwd("1234")
+#     print(hashedPwd)
 
-    bRet = authService.verify_pwd("1235", hashedPwd)
-    print(bRet)
+#     bRet = authService.verify_pwd("1235", hashedPwd)
+#     print(bRet)

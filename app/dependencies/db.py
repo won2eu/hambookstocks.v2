@@ -1,10 +1,18 @@
 from sqlmodel import SQLModel, Session, create_engine
+from dotenv import load_dotenv
+import os
 
-# DB_URL = "sqlite:///db.db"
+load_dotenv()
 
-# DB_CONN_ARGS = {"check_same_thread": False}
+USERNAME = os.environ.get("MYSQL_USERNAME")
+PASSWORD = os.environ.get("MYSQL_PASSWORD")
+HOST = os.environ.get("MYSQL_HOST")
+PORT = os.environ.get("MYSQL_PORT")
+DBNAME = os.environ.get("MYSQL_DBNAME")
 
-# DB_ENGINE = create_engine(DB_URL, connect_args=DB_CONN_ARGS)  # 조필7
+DB_URL = f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
+
+DB_ENGINE = create_engine(DB_URL, echo=True)
 
 
 def get_db_session():

@@ -4,7 +4,11 @@ from app.models.user_models import User
 from app.dependencies.db import *
 from app.dependencies.jwt_utils import JWTUtil
 from app.services.auth_service import AuthService
-from typing import Annotated  # 조필9
+from app.services.redis_service import RedisService
+from app.dependencies.redis_db import get_redis
+
+from typing import Annotated
+from sqlmodel import select
 
 
 router = APIRouter(prefix="/auth")
@@ -15,12 +19,18 @@ router = APIRouter(prefix="/auth")
 def register(
     req: AuthSignupReq, db=Depends(get_db_session), authService: AuthService = Depends()
 ):
-    existing_user = db.query(User).filter(User.login_id == req.login_id).first()
+    existing_user = (
+        db.query(User).filter(User.login_id == req.login_id).first()
+    )  # 이미 존재하는 회원인지 확인인
 
+    existing_email = db.exec(select(User).where(User.email == req.email)).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="ID already exists")
 
-    new_user = authService.signup(db, req.login_id, req.pwd, req.name)
+    if existing_email:
+        raise HTTPException(status_code=400, detail="E-mail already exists")
+
+    new_user = authService.signup(db, req.login_id, req.pwd, req.name, req.email)
 
     if not new_user:
         raise HTTPException(status_code=400, detail="not found")
@@ -30,48 +40,44 @@ def register(
 
 # 로그인
 @router.post("/login")
-def login(
+async def login(
     req: AuthSigninReq,
     db=Depends(get_db_session),
     jwtUtil: JWTUtil = Depends(),
     authService: AuthService = Depends(),
+    redis_db=Depends(get_redis),
+    redisService: RedisService = Depends(),
 ):
 
     user = authService.signin(db, req.login_id, req.pwd)
     if not user:
         raise HTTPException(status_code=401, detail="Login failed")
 
-    user.access_token = jwtUtil.create_token(user.model_dump())
-    db.query(User).filter(User.login_id == user.login_id).update(
-        {"access_token": user.access_token}
-    )
-    db.commit()
+    access_token = jwtUtil.create_token(user.model_dump())
+    # redis 에 토큰넣기
+    await redisService.add_token(redis_db, access_token, req.login_id)
+
     return AuthResp(
-        message="로그인 되었습니다.", user=user, access_token=user.access_token
+        message="로그인 되었습니다.",
+        user=user,
+        access_token=access_token,  # front에 토큰을 응답으로 반환
     )
 
 
 # 로그아웃
 @router.post("/logout")
-def auth_logout(
-    db: Session = Depends(get_db_session), authorization: str = Header(None)
+async def auth_logout(
+    db: Session = Depends(get_db_session),
+    authorization: str = Header(None),
+    redis_db=Depends(get_redis),
+    redisService: RedisService = Depends(),
 ):  # 헤더에서 토큰을 받음
     if not authorization:
         raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
 
     token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
 
-    # table에 해당 토큰이 있는지 확인
-    user = (
-        db.query(User).filter(User.access_token == token).first()
-    )  # 조필10 왜 짝대기 그어져있냐 query, exec 차이
-    if not user:
-        raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
-
-    # 현재 유저의 토큰을 삭제 (NULL 처리)
-    db.query(User).filter(User.id == user.id).update({"access_token": None})
-    db.commit()
-    # db.refresh 조필11
+    await redisService.delete_token(redis_db, token)
     return {"message": "로그아웃 되었습니다."}
 
 
