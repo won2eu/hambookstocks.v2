@@ -1,0 +1,56 @@
+
+.game-start-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    min-height: calc(100vh - 60px); /* 화면 전체 높이 */
+    height: auto;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  
+  .top-section {
+    display: flex;
+    gap: 16px;
+    flex-grow: 1; /* 위쪽 뉴스 + 채팅 차지 영역 */
+    min-height: 1000px;
+  }
+  
+  .news-section {
+    background-color: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+  }
+  
+  .chat-section {
+    background-color: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+  
+  .rank-slider-section {
+    background-color: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 350px;
+    overflow-y: auto;
+  }
+  

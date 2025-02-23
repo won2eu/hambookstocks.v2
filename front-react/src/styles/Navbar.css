@@ -1,0 +1,92 @@
+.navbar {
+    background-color: white;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    font-size: 30px;
+    font-weight: bold;
+    color: #2d3748;
+  }
+  
+  .menu {
+    display: flex;
+    gap: 24px;
+  }
+  
+  .menu-item {
+    text-decoration: none;
+    color: #4a5568;
+    background: none;  /* 버튼 배경 없앰 */
+    border: none;      /* 버튼 테두리 없앰 */
+    padding: 0;        /* 버튼 내부 여백 없앰 */
+    cursor: pointer;   /* 손가락 모양 */
+    font-size: 20px;   /* 혹시 글자 크기 안 맞을 때 맞추기 */
+    line-height: 1;    /* 세로 높이 딱 맞춤 */
+    vertical-align: middle;
+    font-weight: normal;
+  }
+  
+  .menu-item:hover {
+    color: #1a202c;
+  }
+  
+
+.login-panel {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  height: 100vh;
+  background-color: rgb(185, 191, 192);
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  z-index: 200;
+  opacity: 0.93;
+}
+
+.login-panel.open {
+  right: 0;
+}
+
+.login-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: normal;
+}
+
+.login-content input,
+.login-content button {
+  padding: 10px;
+  height: 30px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.login-content button {
+  background-color: #9da5a5;
+  color: white;
+  cursor: pointer;
+  height: 80px;
+  font-size: 20px;
+}
+
+/* 배경 어둡게 */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 150;
+}
+
+  
