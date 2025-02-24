@@ -70,7 +70,6 @@ async def login(
 # 로그아웃
 @router.post("/logout")
 async def auth_logout(
-    db: Session = Depends(get_db_session),
     authorization: str = Header(None),
     redis_db=Depends(get_redis),
     redisService: RedisService = Depends(),
