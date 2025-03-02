@@ -21,7 +21,7 @@ def mk_crawler():
         # 크롤링한 데이터를 저장할 리스트
         news_data = []
 
-        for item in items[:5]:  # 상위 5개 뉴스만 가져오기
+        for item in items[:6]:  # 상위 5개 뉴스만 가져오기
             title_tag = item.select_one("h3.news_ttl")  # 제목 태그
             link_tag = item.select_one("a.news_item")  # 뉴스 링크 태그
             img_tag = item.select_one("div.thumb_area img")  # 뉴스 이미지 태그
