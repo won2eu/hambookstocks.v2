@@ -1,9 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from app.dependencies.db import get_db_session
-from app.models.user_models import User
-from app.models.mystocks_models import MyStocks
+from app.models.DB_user_models import User
+from app.models.DB_mystocks_models import MyStocks
+from app.models.DB_Market_stocks_models import MarketStocks
+from app.models.DB_User_stocks_models import UserStocks
 from app.models.parameter_models import stock_to_buy_and_sell
+from app.dependencies.redis_db import get_redis
+from sqlmodel import select
+
 
 router = APIRouter(prefix="/trade")
 
@@ -13,18 +18,28 @@ def buy_stock(
     req: stock_to_buy_and_sell,
     db: Session = Depends(get_db_session),
     authorization: str = Header(None),
+    redis_db=Depends(get_redis),
 ):
+    # DB에서 stock 고르기
+    stock = db.exec(
+        select(MarketStocks).where(MarketStocks.stock_name == req.stock_name)
+    ).first()
+    if not stock:
+        stock = db.exec(
+            select(UserStocks).where(UserStocks.stock_name == req.stock_name)
+        ).first()
 
     if not authorization:
         raise HTTPException(status_code=401, detail="로그인하셔야 합니다.")
 
     token = authorization.split(" ")[1]
-    user = db.query(User).filter(User.access_token == token).first()
-    if not user:
+    if not (login_id := redis_db.get(token)):
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다")
 
+    user = db.exec(select(User).where(User.login_id == login_id)).first()
+
     # 토큰 인증은 끝
-    # 2. 돈이 있는지 없는지 확인하자자
+    # 2. 돈이 있는지 없는지 확인하자
     total_price = req.stock_price
     if user.balance < total_price:
         raise HTTPException(status_code=400, detail="잔액이 부족합니다.")
@@ -36,19 +51,12 @@ def buy_stock(
     # 잔돈으로 새로 업데이트한 후에
 
     existing_stock = (
-        db.query(MyStocks).filter(MyStocks.stock_code == req.stock_code).first()
+        db.query(MyStocks).filter(MyStocks.stock_name == req.stock_name).first()
     )
 
     if existing_stock:
-        db.query(MyStocks).filter(MyStocks.stock_code == req.stock_code).update(
+        db.query(MyStocks).filter(MyStocks.stock_name == req.stock_name).update(
             {"quantity": MyStocks.quantity + req.quantity}
-        )
-
-        new_avg_price = (
-            total_price + existing_stock.avg_price * existing_stock.quantity
-        ) / (req.quantity + existing_stock.quantity)
-        db.query(MyStocks).filter(MyStocks.stock_code == req.stock_code).update(
-            {"avg_price": new_avg_price}
         )
         db.commit()
         # DB에 주식을 추가해준다
@@ -56,10 +64,8 @@ def buy_stock(
     else:
         new_stock = MyStocks(
             login_id=user.login_id,
-            stock_code=req.stock_code,
+            stock_name=req.stock_name,
             quantity=req.quantity,
-            access_token=user.access_token,
-            avg_price=req.stock_price / req.quantity,
         )
         db.add(new_stock)
     db.commit()
@@ -72,6 +78,7 @@ def sell_order(
     req: stock_to_buy_and_sell,
     db=Depends(get_db_session),
     authorization: str = Header(None),
+    redis_db=Depends(get_redis),
 ):
     """토큰인증"""
 
@@ -79,16 +86,18 @@ def sell_order(
         raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
     token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
     # table에 해당 토큰이 있는지 확인
-    user = db.query(User).filter(User.access_token == token).first()
-    if not user:
-        raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
+
+    if not (login_id := redis_db.get(token)):
+        raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다")
+
+    user = db.exec(select(User).where(User.login_id == login_id)).first()
 
     """mystocks db의 내 보유주식 수량 차감"""
     # 보유주식 확인
     mystock = (
         db.query(MyStocks)
         .filter(
-            MyStocks.login_id == user.login_id, MyStocks.stock_code == req.stock_code
+            MyStocks.login_id == user.login_id, MyStocks.stock_name == req.stock_name
         )
         .first()
     )
@@ -98,7 +107,7 @@ def sell_order(
 
     if mystock.quantity > req.quantity:
         db.query(MyStocks).filter(
-            MyStocks.login_id == user.login_id, MyStocks.stock_code == req.stock_code
+            MyStocks.login_id == user.login_id, MyStocks.stock_name == req.stock_name
         ).update({"quantity": MyStocks.quantity - req.quantity})
 
     elif mystock.quantity == req.quantity:

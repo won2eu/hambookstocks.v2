@@ -8,6 +8,7 @@ from app.routers import (
     mystocks_routers,
     stock_routers,
     set_page_routers,
+    get_news_routers,
 )
 
 from fastapi.staticfiles import StaticFiles
@@ -24,9 +25,7 @@ app.add_middleware(  # CORS MIDDLE WARE
     allow_headers=["*"],
 )
 
-app.mount(
-    "/front/assets", StaticFiles(directory="front/assets"), name="assets"
-)  # STATICFILES 조필2
+app.mount("/front/assets", StaticFiles(directory="front/assets"), name="assets")
 app.mount("/front/vendor", StaticFiles(directory="front/vendor"), name="vendor")
 app.mount("/front2/assets", StaticFiles(directory="front2/assets"), name="assets")
 
@@ -37,3 +36,4 @@ app.include_router(record_routers.router)
 app.include_router(stock_routers.router)
 app.include_router(trade_routers.router)
 app.include_router(set_page_routers.router)
+app.include_router(get_news_routers.router)
