@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from app.models.parameter_models import *
-from app.models.user_models import User
+from app.models.DB_user_models import User
 from app.dependencies.db import *
 from app.dependencies.redis_db import *
 from app.dependencies.jwt_utils import JWTUtil

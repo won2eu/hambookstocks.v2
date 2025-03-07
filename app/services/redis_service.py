@@ -19,3 +19,8 @@ class RedisService:
             raise HTTPException(status_code=404, detail="Redis token expired")
 
         await redis_db.delete(token)
+
+
+# 1. USER
+# 2. MYSTOCKS (바꿔야됨)
+# 3. 매도매수량 기록용 DB + 주식 종목 (2개)
