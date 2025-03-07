@@ -31,6 +31,9 @@ export default function Navbar() {
           <input type="text" placeholder="아이디" />
           <input type="password" placeholder="비밀번호" />
           <button>Login</button>
+
+          {/* 회원가입 버튼 추가 */}
+          <button className="sign-up-box">Sign up</button>
         </div>
       </div>
 
