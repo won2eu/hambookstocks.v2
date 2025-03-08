@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from app.models.parameter_models import *
-from app.models.user_models import User
+from app.models.DB_user_models import User
 from app.dependencies.db import *
 from app.dependencies.redis_db import *
 from app.dependencies.jwt_utils import JWTUtil
@@ -21,14 +21,12 @@ def register(
 ):
     existing_user = (
         db.query(User).filter(User.login_id == req.login_id).first()
-    )  # 이미 존재하는 회원인지 확인하는 것
-    existing_email = db.exec(
-        select(User).where(User.email == req.email)
-    ).first()  # 이미 존재하는 이메일인지 확인하는 것
-
-    existing_email = db.exec(select(User).where(User.email == req.email)).first()
+    )  # 아이디 중복체크
     if existing_user:
         raise HTTPException(status_code=400, detail="ID already exists")
+
+    # 이미 존재하는 이메일인지 확인하는 것
+    existing_email = db.exec(select(User).where(User.email == req.email)).first()
 
     if existing_email:
         raise HTTPException(status_code=400, detail="E-mail already exists")
@@ -36,7 +34,7 @@ def register(
     new_user = authService.signup(db, req.login_id, req.pwd, req.name, req.email)
 
     if not new_user:
-        raise HTTPException(status_code=400, detail="not found")
+        raise HTTPException(status_code=400, detail="Failed to register")
 
     return AuthResp(message="User registered successfully", user=new_user)
 
@@ -78,6 +76,9 @@ async def auth_logout(
         raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
 
     token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
+
+    if not await redis_db.get(token):
+        raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
 
     await redisService.delete_token(redis_db, token)
 
