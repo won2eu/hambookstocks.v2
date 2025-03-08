@@ -28,7 +28,7 @@ async def websocket_endpoint(
     token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
     guest_id = guest_id
 
-    if login_id := redis_db.get(token):  # 로그인이 되어 있다면..
+    if login_id := await redis_db.get(token):  # 로그인이 되어 있다면..
         await manager.connect(websocket)
 
         try:

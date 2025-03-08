@@ -1,3 +1,4 @@
+from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi.middleware.cors import CORSMiddleware  # CORS, MIDDLE WARE 조필1
 from fastapi import FastAPI  # FAST API IMPORT
 from app.dependencies.db import *
@@ -9,13 +10,15 @@ from app.routers import (
     stock_routers,
     set_page_routers,
     getnews_routers,
+    make_stock_routers,
 )
-
+from app.services.trade_service import clear_trend
 from fastapi.staticfiles import StaticFiles
 
 create_db_and_table()
 
 app = FastAPI()
+scheduler = BackgroundScheduler()
 
 app.add_middleware(  # CORS MIDDLE WARE
     CORSMiddleware,
@@ -37,3 +40,7 @@ app.include_router(stock_routers.router)
 app.include_router(trade_routers.router)
 app.include_router(set_page_routers.router)
 app.include_router(getnews_routers.router)
+app.include_router(make_stock_routers.router)
+
+scheduler.add_job(clear_trend, "interval", minutes=60)
+scheduler.start()
