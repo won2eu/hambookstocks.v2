@@ -41,6 +41,7 @@ export default function Navbar() {
         </button>
       </div>
 
+
       {isLoginOpen && (
         <div className="login-panel open">
           <div className="login-content">
@@ -61,7 +62,11 @@ export default function Navbar() {
             <button className="login-button" onClick={handleLogin}>
               Login
             </button>
+
+            {/* 회원가입 버튼 추가 */}
+          <button className="sign-up-box">Sign up</button>
           </div>
+
         </div>
       )}
 
