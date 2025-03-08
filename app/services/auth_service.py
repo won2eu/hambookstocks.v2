@@ -6,7 +6,7 @@
 import bcrypt
 import time
 from sqlmodel import Session, select
-from app.models.user_models import User
+from app.models.DB_user_models import User
 
 BALANCE = 1000000
 

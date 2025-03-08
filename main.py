@@ -9,13 +9,20 @@ from app.routers import (
     stock_routers,
     set_page_routers,
     get_news_routers,
+    make_stock_routers,
+    mypage_routers,
 )
 
 from fastapi.staticfiles import StaticFiles
+from apscheduler.schedulers.background import BackgroundScheduler
+from app.services.trade_service import clear_trend
+
 
 create_db_and_table()
 
 app = FastAPI()
+scheduler = BackgroundScheduler()
+
 
 app.add_middleware(  # CORS MIDDLE WARE
     CORSMiddleware,
@@ -37,3 +44,8 @@ app.include_router(stock_routers.router)
 app.include_router(trade_routers.router)
 app.include_router(set_page_routers.router)
 app.include_router(get_news_routers.router)
+app.include_router(make_stock_routers.router)
+app.include_router(mypage_routers.router)
+
+scheduler.add_job(clear_trend, "interval", minutes=60)
+scheduler.start()

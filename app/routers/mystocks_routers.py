@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from app.models.parameter_models import *
-from app.models.mystocks_models import MyStocks
+from app.models.DB_mystocks_models import MyStocks
 from app.dependencies.db import *
 from sqlmodel import select
 from app.dependencies.jwt_utils import *

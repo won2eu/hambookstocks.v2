@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from app.models.parameter_models import *
-from app.models.user_models import User
+from app.models.DB_user_models import User
 from app.dependencies.db import get_db_session
 from sqlmodel import select, desc
 
