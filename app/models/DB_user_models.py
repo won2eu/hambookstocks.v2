@@ -21,12 +21,3 @@ class User(SQLModel, table=True):
         if not re.match(pattern, value):
             raise ValueError("비밀번호는 8~20자이며, 숫자와 영어를 포함해야 합니다.")
         return value
-
-    # 이메일 정규표현식 검증 (@ 포함, .com 또는 .net)
-    @field_validator("email")
-    @classmethod
-    def validate_email(cls, value):
-        pattern = r"^[\w\.-]+@[\w\.-]+\.(com|net)$"
-        if not re.match(pattern, value):
-            raise ValueError("유효하지 않은 email 형식 입니다.")
-        return value
