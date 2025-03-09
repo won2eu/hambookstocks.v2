@@ -24,10 +24,35 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     flex: 7;
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
+    flex: 2;
+    overflow-y: auto;
+    max-height: 1000px;
+    overflow-x: hidden;
+  }
 
+  .news-section::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .news-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .news-section::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+  
+  .news-section::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  .news-item {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 16px;
+    background-color: white;
+    border-radius: 8px;
   }
   
   .chat-section {
@@ -35,11 +60,12 @@
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    flex: 3;
+    flex: 1;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    
+    flex-direction: column;
+    max-height: 1000px;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   
   .rank-slider-section {
