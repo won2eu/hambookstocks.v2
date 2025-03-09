@@ -7,7 +7,6 @@ from app.dependencies.jwt_utils import JWTUtil
 from app.services.auth_service import AuthService
 from app.services.redis_service import RedisService
 from app.dependencies.redis_db import get_redis
-from typing import Annotated
 from sqlmodel import select
 
 
@@ -83,22 +82,3 @@ async def auth_logout(
     await redisService.delete_token(redis_db, token)
 
     return {"message": "로그아웃 되었습니다."}
-
-
-@router.post("/check-token")
-def check_token(Authorization: Annotated[str, Header()], jwtUtil: JWTUtil = Depends()):
-    token = Authorization.replace("Bearer ", "")
-    if not token:
-        raise HTTPException(status_code=400, detail="Token is required")
-    try:
-        payload = jwtUtil.decode_token(token)
-        if payload is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-    except Exception as e:
-        raise HTTPException(status_code=401, detail="Token decode error")
-
-    login_id = payload.get("login_id")
-
-    if login_id is None:
-        raise HTTPException(status_code=400, detail="Login ID not found in token")
-    return {"message": "Token is valid"}
