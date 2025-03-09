@@ -6,7 +6,7 @@ class UserStocks(SQLModel, table=True):
     login_id: str
     stock_name: str
     stock_price: float
-    # quantity 추가가
+    stock_quantity: int
     trend_buy: int = Field(default=0)
     trend_sell: int = Field(default=0)
     total_buy: int = Field(default=0)
