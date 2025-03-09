@@ -30,6 +30,7 @@ class stock_to_buy_and_sell(BaseModel):  # req 클래스
 class MakeStockReq(BaseModel):
     stock_name: str
     stock_price: float
+    stock_quantity: int
     stock_description: str
 
 
@@ -43,3 +44,9 @@ class MyPageResp(BaseModel):
     login_id: str
     email: str
     balance: float
+
+
+class ChangePwd(BaseModel):
+    origin_pwd: str
+    new_pwd: str
+    check_new_pwd: str
