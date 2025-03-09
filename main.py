@@ -11,6 +11,7 @@ from app.routers import (
     set_page_routers,
     getnews_routers,
     make_stock_routers,
+    multi_chat_routers,
 )
 from app.services.trade_service import clear_trend
 from fastapi.staticfiles import StaticFiles
@@ -41,6 +42,7 @@ app.include_router(trade_routers.router)
 app.include_router(set_page_routers.router)
 app.include_router(getnews_routers.router)
 app.include_router(make_stock_routers.router)
+app.include_router(multi_chat_routers.router)
 
 scheduler.add_job(clear_trend, "interval", minutes=60)
 scheduler.start()

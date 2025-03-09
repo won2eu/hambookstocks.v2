@@ -20,15 +20,22 @@ manager = ConnectionManager()
 @router.websocket("/ws")
 async def websocket_endpoint(
     websocket: WebSocket,
-    authorization: str = Header(None),
-    guest_id: str = Header(None),
     redis_db=Depends(get_redis),
 ):
 
-    token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
-    guest_id = guest_id
+    await websocket.accept()
+    print("WebSocket 연결 수락됨")
+    auth_data = await websocket.receive_json()
+    token = None
+    guest_id = None
 
-    if login_id := await redis_db.get(token):  # 로그인이 되어 있다면..
+    if auth_data["type"] == "auth":
+        if "authorization" in auth_data:
+            token = auth_data["authorization"].split(" ")[1]
+        if "guest_id" in auth_data:
+            guest_id = auth_data["guest_id"]
+
+    if token and (login_id := await redis_db.get(token)):  # 로그인이 되어 있다면..
         await manager.connect(websocket)
 
         try:

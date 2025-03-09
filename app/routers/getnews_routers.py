@@ -18,3 +18,6 @@ def get_news():
     summarized_news = summarize_news(news_json)
 
     return news_resp(message="뉴스 업데이트 성공", summarized_news=summarized_news)
+
+
+# 리스트안에 딕셔너리임
