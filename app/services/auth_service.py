@@ -12,12 +12,14 @@ BALANCE = 1000000
 
 
 class AuthService:
-    def get_hashed_pwd(self, pwd: str) -> str:
+    @staticmethod
+    def get_hashed_pwd(pwd: str) -> str:
         encoded_pwd = pwd.encode("utf-8")
         salt = bcrypt.gensalt()
-        return bcrypt.hashpw(encoded_pwd, salt)
+        return bcrypt.hashpw(encoded_pwd, salt).decode("utf-8")
 
-    def verify_pwd(self, pwd: str, hpwd: str) -> bool:
+    @staticmethod
+    def verify_pwd(pwd: str, hpwd: str) -> bool:
         encoded_pwd = pwd.encode("utf-8")
         hpwd = hpwd.encode("utf-8")
         return bcrypt.checkpw(password=encoded_pwd, hashed_password=hpwd)
