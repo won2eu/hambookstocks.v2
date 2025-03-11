@@ -47,6 +47,10 @@ class AccountService:
         user_trades = self.db.exec(
             select(TradeStocks).where(TradeStocks.login_id == login_id)
         ).all()
+        if not user_trades:
+            print(f"삭제할 거래 내역이 없습니다. login_id: {login_id}")
+            return
+
         for trade in user_trades:
             self.db.delete(trade)
 
@@ -56,6 +60,10 @@ class AccountService:
         user_stocks = self.db.exec(
             select(UserStocks).where(UserStocks.login_id == login_id)
         ).all()
+        if not user_stocks:
+            print(f"삭제할 거래 내역이 없습니다. login_id: {login_id}")
+            return
+
         for stock in user_stocks:
             self.db.delete(stock)
 
@@ -65,10 +73,21 @@ class AccountService:
         user_stocks = self.db.exec(
             select(UserStocks).where(UserStocks.login_id == login_id)
         ).all()
+
+        print(f"user_stocks for {login_id}: {user_stocks}")
+
         stock_names = [stock.stock_name for stock in user_stocks]
 
         if not stock_names:
             logging.info("삭제할 주식이 없습니다.")
+            return
+
+        existing_stocks = self.db.exec(
+            select(MyStocks).where(MyStocks.stock_name.in_(stock_names))
+        ).all()
+
+        if not existing_stocks:
+            logging.info("MyStocks에 해당 주식이 없습니다. 삭제 중단.")
             return
 
         self.db.exec(delete(MyStocks).where(MyStocks.stock_name.in_(stock_names)))
