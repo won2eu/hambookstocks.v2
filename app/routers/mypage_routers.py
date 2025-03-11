@@ -25,11 +25,11 @@ async def get_mypage(
     if not token:
         raise HTTPException(status_code=401, deatil="토큰이 필요합니다.")
     # 토큰 검사
+
     login_id = await redis_db.get(token)
+    print(login_id)
     if not login_id:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
-    # redis에서 가져온 값이 byte 타입 일 수도 있음.
-    login_id = login_id.decode("utf-8")
 
     # login_id 에 해당하는 User 정보 조회
     user = db.exec(select(User).where(User.login_id == login_id)).first()
@@ -59,13 +59,11 @@ async def delete_account(
     login_id = await redis_db.get(token)
     if not login_id:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
-    # redis에서 가져온 값이 byte 타입 일 수도 있음.
-    login_id = login_id.decode("utf-8")
 
     service = AccountService(db)
+    service.delete_victim_stock(login_id)
     service.delete_account(login_id)
     await redis_db.delete(token)  # redis에서 삭제
-    service.delete_victim_stock(login_id)
 
     return {"message": "User account deleted"}
 
@@ -88,12 +86,11 @@ async def gg(
     login_id = await redis_db.get(token)
     if not login_id:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
-    # redis에서 가져온 값이 byte 타입 일 수도 있음.
-    login_id = login_id.decode("utf-8")
 
     service = AccountService(db)
     # login_id가 상장한 주식을 갖고 있는 사람 주식 모두 삭제
     service.delete_victim_stock(login_id)
+    service._delete_user_stocks(login_id)
     service._delete_user_owned_stocks(login_id)  # 본인 보유 주식 삭제
     db.query(User).filter(User.login_id == login_id).update(
         {"balance": 1000000}
@@ -123,10 +120,7 @@ async def change_pwd(
     login_id = await redis_db.get(token)
     if not login_id:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
-
-    # redis에서 가져온 값이 byte 타입 일 수도 있음.
-    login_id = login_id.decode("utf-8")
-
+    print(login_id)
     # 기존 비밀번호 확인
     user = db.exec(select(User).where(User.login_id == login_id)).first()
     if not user:
@@ -139,7 +133,7 @@ async def change_pwd(
     if req.new_pwd != req.check_new_pwd:
         raise HTTPException(status_code=400, detail="새 비밀번호가 일치하지 않습니다.")
 
-    # db에 새로운 해싱된 비밀번호 업데이트트
+    # db에 새로운 해싱된 비밀번호 업데이트
     new_hpwd = AuthService.get_hashed_pwd(req.new_pwd)
     db.exec(update(User).where(User.login_id == login_id).values(pwd=new_hpwd))
     db.commit()
