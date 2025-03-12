@@ -11,11 +11,11 @@ HAMBOOK STOCKS는 주식 투자와 시장 환경을 가상으로 체험할 수 �
 
 ## 🔨 기술 스택
 
-### 프론트엔드
+### FrontEnd
 - React
 - Axios
   
-### 백엔드
+### BackEnd
 - FastAPI
 
 ### DataBase
