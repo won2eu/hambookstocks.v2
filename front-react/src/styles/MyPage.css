@@ -1,0 +1,87 @@
+/* MyPage.css */
+
+body {
+    font-family: sans-serif;
+    background-color: #f9f9f9;
+    text-align: center;
+  }
+  
+  .mypage-container {
+    width: 60%;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* 상단: 프로필 박스 */
+  .profile-box {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin-bottom: 20px; /* 상단과 하단의 간격 */
+  }
+  
+  /* 프로필 이미지 스타일 */
+  .profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #ddd;
+    margin-right: 20px;
+  }
+  
+  /* 사용자 정보 스타일 */
+  .user-info {
+    text-align: left;
+    font-size: 20px;
+    font-weight: normal;
+  }
+  
+  /* 하단: 버튼 컨테이너 */
+  .buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  /* 버튼 스타일 */
+  button {
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 2px solid #ddd;
+    background: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  /* 버튼 hover 효과 */
+  button:hover {
+    background-color: #7f8686; /* 마우스를 올리면 배경이 진해짐 */
+    color: white; /* 글자색도 흰색으로 */
+  }
+  
+  /* 포커스 상태에서 버튼 스타일 */
+  button:focus {
+    outline: none; /* 포커스 시 기본 outline 제거 */
+    border: 2px solid #4a5568; /* 포커스 시 테두리 색상 변경 */
+  }
+  
+  /* 프로필 버튼 스타일 */
+  .profile-button {
+    background-color: #9da5a5;
+    color: white;
+  }
+  
+  .profile-button:hover {
+    background-color: #7f8686; /* 마우스를 올리면 배경이 진해짐 */
+  }
+  

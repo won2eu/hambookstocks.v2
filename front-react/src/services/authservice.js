@@ -25,3 +25,12 @@ export const signup = async (loginID, password, name, email) => {
         throw error.response?.data?.detail || "회원가입 실패";
     }
 }
+
+export const logout = async () => {
+    try {
+        const response = await api.post("/auth/logout");
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.detail || "로그아웃 실패";
+    }
+};

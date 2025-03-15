@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { login } from '../services/authservice';
 import '../styles/Navbar.css';
 import { signup } from '../services/authservice';
+import { logout } from '../services/authservice';
+import { Link } from 'react-router-dom';  // Link 추가
 
 export default function Navbar() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -11,6 +13,17 @@ export default function Navbar() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
+  const [userName, setUserName] = useState(''); // 로그인 사용자 이름
+
+  // 로그인 상태를 체크하는 useEffect
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+      setUserName(localStorage.getItem('userName')); // 토큰이 있으면 사용자 이름 설정
+    }
+  }, []);
 
   const toggleLoginPanel = () => {
     setIsLoginOpen(!isLoginOpen);
@@ -39,6 +52,9 @@ export default function Navbar() {
       }
       const responseData = await login(loginID, password);
       localStorage.setItem('token', responseData.access_token);
+      localStorage.setItem('userName', loginID); // 사용자 이름 저장
+      setIsLoggedIn(true); // 로그인 상태 업데이트
+      setUserName(loginID); // 사용자 이름 설정
       alert('로그인 성공');
       setIsLoginOpen(false);
       resetForm();
@@ -69,6 +85,20 @@ export default function Navbar() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+        await logout(); // 백엔드에 로그아웃 요청
+        localStorage.removeItem("token"); // 저장된 토큰 삭제
+        localStorage.removeItem("userName"); // 사용자 이름 삭제
+        setIsLoggedIn(false); // 로그인 상태 변경
+        setUserName(""); // 사용자 이름 초기화
+        alert("로그아웃 되었습니다.");
+    } catch (error) {
+        console.error("로그아웃 실패:", error);
+        alert("로그아웃 중 오류가 발생했습니다.");
+    }
+};
+
   return (
     <nav className="navbar">
       <div className="logo">HAMBOOK-STOCKS</div>
@@ -79,26 +109,27 @@ export default function Navbar() {
         <a href="/about" className="menu-item">
           How To Play
         </a>
-        <a href="/services" className="menu-item">
+        <Link to="/mypage" className="menu-item">
           MyPage
-        </a>
+        </Link> {/* link로 수정 */}
         <button className="menu-item" onClick={toggleLoginPanel}>
-          Login
+          {isLoggedIn? 'My Account':'Login'} {/* 로그인 여부에 따라 버튼 이름 변경 */}
         </button>
       </div>
-
+      
       {isLoginOpen && (
         <div className="login-panel open">
-          {!isSignUpMode ? (
-            <div className="login-content">
-              <p>Please Login Here</p>
-              {error && <p className="error-message">{error}</p>}
-              <input
-                type="text"
-                placeholder="아이디"
-                value={loginID}
-                onChange={(e) => setLoginId(e.target.value)}
-              />
+          {!isLoggedIn ? ( /* 로그인 여부에 따라 판넬 내용 변경 */
+            !isSignUpMode ? (
+              <div className="login-content">
+                <p>Please Login Here</p>
+                {error && <p className="error-message">{error}</p>}
+                <input
+                  type="text"
+                  placeholder="아이디"
+                  value={loginID}
+                  onChange={(e) => setLoginId(e.target.value)}
+                />
               <input
                 type="password"
                 placeholder="비밀번호"
@@ -145,6 +176,14 @@ export default function Navbar() {
               </button>
               <button className="back-to-login" onClick={toggleSignUpMode}>
                 로그인으로 돌아가기
+              </button>
+            </div>
+          )
+        ) : (
+          <div className="logged-in-content"> {/* 로그인 성공 시 판넬 내용 변경 */}
+              <p>{userName}님 환영합니다!</p>
+              <button className="logout-button" onClick={handleLogout}>
+                Logout
               </button>
             </div>
           )}
