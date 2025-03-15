@@ -30,6 +30,7 @@ export const signup = async (loginID, password, name, email) => {
 export const logout = async () => {
     try {
         const response = await api.post("/auth/logout");
+        window.location.reload();
         return response.data;
     } catch (error) {
         throw error.response?.data?.detail || "로그아웃 실패";
