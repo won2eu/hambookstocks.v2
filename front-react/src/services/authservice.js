@@ -6,12 +6,13 @@ export const login = async (loginID, password) => {
             login_id: loginID,
             pwd: password
         });
+        localStorage.setItem('login_id', loginID);
+        window.location.reload();
         return response.data;
     } catch(error){
         throw error.response?.data?.detail || "로그인 실패";
     }
 };
-
 export const signup = async (loginID, password, name, email) => {
     try{
         const response = await api.post("/auth/register",{
@@ -25,3 +26,4 @@ export const signup = async (loginID, password, name, email) => {
         throw error.response?.data?.detail || "회원가입 실패";
     }
 }
+

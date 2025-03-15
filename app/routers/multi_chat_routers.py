@@ -37,7 +37,6 @@ async def websocket_endpoint(
 
     if token and (login_id := await redis_db.get(token)):  # 로그인이 되어 있다면..
         await manager.connect(websocket)
-
         try:
             while True:
                 data = await websocket.receive_text()
@@ -47,6 +46,7 @@ async def websocket_endpoint(
             manager.disconnect(websocket)
 
     else:  # 로그인이 되어 있지 않다면 ..
+
         await manager.connect(websocket)
 
         try:

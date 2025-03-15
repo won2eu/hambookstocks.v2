@@ -79,7 +79,7 @@ export default function Navbar() {
         <a href="/about" className="menu-item">
           How To Play
         </a>
-        <a href="/services" className="menu-item">
+        <a href="/MyPage" className="menu-item">
           MyPage
         </a>
         <button className="menu-item" onClick={toggleLoginPanel}>

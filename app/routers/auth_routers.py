@@ -10,7 +10,6 @@ from app.dependencies.redis_db import get_redis
 from typing import Annotated
 from sqlmodel import select
 
-
 router = APIRouter(prefix="/auth")
 
 

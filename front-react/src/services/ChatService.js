@@ -1,12 +1,21 @@
 class WebSocketService {
     constructor() {
       this.ws = null;
+      this.messages = JSON.parse(sessionStorage.getItem('chatMessages')) || [];
+      this.guestId = null;
+    }
+
+    saveMessages(message) {
+      this.messages = [...this.messages, message];
+      sessionStorage.setItem('chatMessages', JSON.stringify(this.messages));
     }
   
+
     connect() {
       const token = localStorage.getItem('token');
-      const guestId = token ? null : 'guest_' + Math.random().toString(36).substring(2, 9);
-      
+      const guestId = 'guest_' + Math.random().toString(36).substring(2, 9);
+      this.guestId = guestId;
+
       // 기본 연결
       this.ws = new WebSocket('ws://localhost:8000/multichat/ws');
       // 연결 성공 시 인증 데이터 전송
@@ -19,10 +28,9 @@ class WebSocketService {
           // token이 있을 때만 authorization 추가
           if (token) {
             authData.authorization = `Bearer ${token}`;
-          }
-          // guestId가 있을 때만 guest_id 추가
-          if (guestId) {
             authData.guest_id = guestId;
+          } else {
+            authData.guest_id = guestId;  // 비로그인 시 반드시 guest_id 전송
           }
         this.ws.send(JSON.stringify(authData));
       };
