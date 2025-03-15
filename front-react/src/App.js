@@ -1,8 +1,7 @@
 import './App.css';
 import Navbar from './components/Navbar';
 import PageSlider from './components/PageSlider'
-import MyPage from './components/MyPage';  // MyPage 컴포넌트 추가
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // import 추가
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
  /* function App() {
   return (

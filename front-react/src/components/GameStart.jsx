@@ -1,7 +1,7 @@
 import '../styles/GameStart.css';
 import RankSlider from './RankSlider';
 import { get_news } from '../services/NewsService';
-import { useState, useEffect } from 'react'; // useState 추가 필요
+import { useState, useEffect, useRef } from 'react'; // useState 추가 필요
 import { chatService } from '../services/ChatService';
 
 export default function GameStart() {
@@ -14,14 +14,27 @@ export default function GameStart() {
   ];
 
   const [news, setNews] = useState([]);
-  const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
+  const [messages, setMessages] = useState(
+    JSON.parse(sessionStorage.getItem('chatMessages')) || [],
+  ); //parse는 제이슨 문자열을 자바스크립트 객체(초기 상태)로 변환하는 함수
+
+  const chatMessagesRef = useRef(null);
+  useEffect(() => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   useEffect(() => {
     chatService.connect();
 
     chatService.ws.onmessage = (event) => {
-      setMessages((prev) => [...prev, event.data]);
+      setMessages((prev) => {
+        const newMessages = [...prev, event.data];
+        sessionStorage.setItem('chatMessages', JSON.stringify(newMessages));
+        return newMessages;
+      });
     };
 
     return () => {
@@ -67,13 +80,39 @@ export default function GameStart() {
         </div>
         {/* 채팅 영역 */}
         <div className="chat-section">
-          <h2>💬 채팅방</h2>
-          <div className="chat-messages">
-            {messages.map((msg, index) => (
-              <div key={index} className="chat-message">
-                {typeof msg === 'string' ? msg : msg.content}
-              </div>
-            ))}
+          <h2>STOCK TALK</h2>
+          <div className="chat-messages" ref={chatMessagesRef}>
+            {messages.map((msg, index) => {
+              try {
+                // JSON 형태의 메시지 처리
+                const messageObj =
+                  typeof msg === 'string' ? JSON.parse(msg.split(' says: ')[1]) : msg;
+                const username = msg.split(' says: ')[0].replace('Client #', '');
+                const content = messageObj.content; // JSON에서 content 추출
+
+                const loginId = localStorage.getItem('login_id');
+                let currentUser = loginId || chatService.guestId;
+
+                if (loginId && username.startsWith('guest_')) {
+                  currentUser = chatService.guestId;
+                }
+
+                const isMyMessage = username === currentUser;
+                return (
+                  <div
+                    key={index}
+                    className={`chat-message ${isMyMessage ? 'my-message' : 'other-message'}`}
+                  >
+                    <span className="username">{username}</span>
+                    <span className="separator">: </span>
+                    <span className="content">{content}</span>
+                  </div>
+                );
+              } catch (error) {
+                console.log('메시지 파싱 에러:', error);
+                return null;
+              }
+            })}
           </div>
           <div className="chat-input">
             <input
