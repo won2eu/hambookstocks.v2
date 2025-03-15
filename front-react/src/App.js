@@ -1,7 +1,7 @@
 import './App.css';
 import Navbar from './components/Navbar';
 import PageSlider from './components/PageSlider'
-import MyPage from './components/MyPage';
+import MyPage from './components/MyPage'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
  /* function App() {
