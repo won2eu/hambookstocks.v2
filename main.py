@@ -14,7 +14,6 @@ from app.routers import (
     multi_chat_routers,
     mypage_routers,
 )
-from app.services.trade_service import clear_trend
 from fastapi.staticfiles import StaticFiles
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.services.trade_service import clear_trend
