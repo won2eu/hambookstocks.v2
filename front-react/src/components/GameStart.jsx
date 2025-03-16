@@ -7,10 +7,10 @@ import { chatService } from '../services/ChatService';
 export default function GameStart() {
   const dummyRankings = [
     //일단 임시데이터임
-    { name: '하승원', balance: 1000000 },
-    { name: '김민찬', balance: 8500 },
-    { name: '이서진', balance: 7200 },
-    { name: '김혜빈', balance: 6800 },
+    { name: '곧 출시될 예정입니다.', balance: 2025.04 },
+    { name: '곧 출시될 예정입니다.', balance: 2025.04 },
+    { name: '곧 출시될 예정입니다.', balance: 2025.04 },
+    { name: '곧 출시될 예정입니다.', balance: 2025.04 },
   ];
 
   const [news, setNews] = useState([]);

@@ -124,3 +124,18 @@
   cursor: pointer;
   font-size: 20px;
 }
+
+.game-explain {
+  background: #f8f8f8;
+  padding: 10px;
+  border-radius: 5px;
+  width: 250px;
+  margin-top: 50px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  z-index: 200;
+  
+}
+
+
+
