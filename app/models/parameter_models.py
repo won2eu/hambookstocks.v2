@@ -50,3 +50,12 @@ class ChangePwd(BaseModel):
     origin_pwd: str
     new_pwd: str
     check_new_pwd: str
+
+
+class TradeStocksResp(BaseModel):
+    stock_quantity: int
+    is_buy: bool | None = None
+
+
+class TradeStockReq(BaseModel):
+    stock_name: str
