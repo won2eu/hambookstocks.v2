@@ -64,7 +64,6 @@ hambookstocks.v2
 │  │  ├─ trade_service.py
 │  │  └─ __init__.py
 │  └─ __init__.py
-<<<<<<< HEAD
 ├─ front
 │  ├─ assets
 │  │  ├─ css
@@ -151,7 +150,6 @@ hambookstocks.v2
 │  │  └─ utils
 │  │     └─ api.js
 │  └─ yarn.lock
-<<<<<<< HEAD
 ├─ front2
 │  ├─ assets
 │  │  ├─ css
@@ -239,17 +237,7 @@ hambookstocks.v2
 ├─ README.md
 ├─ requirements.txt
 └─ 코드_종목명_0206.csv
-
 ```
-=======
-│  │        
-│  │        
-│  └─ index.html
-├─ main.py
-├─ README.md
-└─ requirements.txt
-```
----
 
 ## 구현 기능
 - 웹 크롤링 및 OpenAI API를 이용한 뉴스 게시판
