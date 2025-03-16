@@ -13,12 +13,12 @@ from app.services.redis_service import RedisService
 from sqlmodel import select
 
 router = APIRouter(prefix="/trade")
+
 # 주식 가격변동계수
-alpha = 100
-available_quantity = 0  # 기본값으로 초기화
+alpha = 0.1
 
 
-@router.post("/buy")  # req: 수량, 금액, 주식 코드,
+@router.post("/buy_request")  # req: 수량, 금액, 주식 코드,
 async def buy_stock(
     req: stock_to_buy_and_sell,
     db: Session = Depends(get_db_session),
@@ -26,11 +26,11 @@ async def buy_stock(
     redis_db=Depends(get_redis),
     redis_service: RedisService = Depends(),
 ):
-    # if not authorization:
-    #     raise HTTPException(status_code=401, detail="로그인하셔야 합니다.")
+    if not authorization:
+        raise HTTPException(status_code=401, detail="로그인하셔야 합니다.")
 
-    # token = authorization.split(" ")[1]
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiXHVhZTQwXHViYmZjXHVjYzJjIiwiaWQiOjQsImVtYWlsIjoia2ltbWMzNDIzQG5hdmVyLmNwbSIsImxvZ2luX2lkIjoiYWEiLCJiYWxhbmNlIjo5OTAwMDAuMCwiZXhwIjoxNzQyMTIxMDk2fQ.0B7Ha2TZ51yWPd8WwTOAFDJ91p2xc6OD-DsEh6q9R1M"
+    token = authorization.split(" ")[1]
+
     if not (login_id := await redis_db.get(token)):
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다")
 
@@ -204,7 +204,7 @@ async def buy_stock(
     return {"msg": "매수요청 완료"}
 
 
-@router.post("/sell")
+@router.post("/sell_request")
 async def sell_order(
     req: stock_to_buy_and_sell,
     db=Depends(get_db_session),
@@ -214,11 +214,10 @@ async def sell_order(
 ):
     """토큰인증"""
 
-    # if not authorization:
-    #     raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
-    # token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
-    # # table에 해당 토큰이 있는지 확인
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJiYWxhbmNlIjo5ODUwMDAuMCwibG9naW5faWQiOiJhYSIsIm5hbWUiOiJcdWFlNDBcdWJiZmNcdWNjMmMiLCJpZCI6NCwiZW1haWwiOiJraW1tYzM0MjNAbmF2ZXIuY3BtIiwiZXhwIjoxNzQyMTI2ODA1fQ.JAlGyszDTfWAxzcOl0KkU6uGe42bRoFEcY94G9lBUeY"
+    if not authorization:
+        raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
+    token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
+
     if not (login_id := await redis_db.get(token)):
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다")
 
