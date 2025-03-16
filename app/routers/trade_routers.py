@@ -8,7 +8,6 @@ from app.models.DB_Market_stocks_models import MarketStocks
 from app.models.DB_User_stocks_models import UserStocks
 from app.models.parameter_models import stock_to_buy_and_sell
 from app.dependencies.redis_db import get_redis
-from app.services.trade_service import TradeService
 from app.services.redis_service import RedisService
 from sqlmodel import select
 

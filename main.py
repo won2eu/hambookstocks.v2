@@ -16,7 +16,6 @@ from app.routers import (
 )
 from fastapi.staticfiles import StaticFiles
 from apscheduler.schedulers.background import BackgroundScheduler
-from app.services.trade_service import clear_trend
 
 
 create_db_and_table()
@@ -50,5 +49,5 @@ app.include_router(multi_chat_routers.router)
 
 app.include_router(mypage_routers.router)
 
-scheduler.add_job(clear_trend, "interval", minutes=60)
-scheduler.start()
+# scheduler.add_job(clear_trend, "interval", minutes=60)
+# scheduler.start()
