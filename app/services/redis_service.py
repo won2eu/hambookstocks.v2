@@ -27,4 +27,4 @@ class RedisService:
         stock_name: str,
         stock_price: float,
     ):
-        await redis_db.set(stock_name, stock_price)
+        await redis_db.hset("stocks", stock_name, stock_price)

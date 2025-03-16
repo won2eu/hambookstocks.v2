@@ -66,6 +66,11 @@
     border: 1px solid #ddd;
     gap: 70px; 
   }
+
+  .stock-info-item span {
+    flex: 1;
+    text-align: center;
+}
   
   /* 두 번째 영역 (주식 차트 & 거래 정보) */
   .stock-trade-info-item {

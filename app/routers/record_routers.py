@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 ### 임시로 돈 주기
-@router.post("/record")
+@router.post("/record/money")
 def plus_balance(login_id: str, money: float, db=Depends(get_db_session)):
     user = db.exec(select(User).where(User.login_id == login_id)).first()
 
