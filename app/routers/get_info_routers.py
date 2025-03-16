@@ -41,8 +41,8 @@ async def get_trade_stocks(
     return TradeStocksResp(stock_quantity=total_quantity, is_buy=is_buy_value)
 
 
-@router.get("/all_stocks")
-async def get_all_stocks(
+@router.get("/stock_detail")
+async def get_stock_detail(
     req: TradeStockReq,
     authorization: str = Header(None),
     redis_db=Depends(get_redis),

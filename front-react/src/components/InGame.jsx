@@ -83,6 +83,7 @@ export default function InGame() {
 
           {Object.entries(stockInfo).map(([stockName, stockPrice]) => (
             <div
+              key={stockName}
               className="stock-info-item"
               onClick={() => handleStockClick(stockName, stockPrice)}
             >
