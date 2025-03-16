@@ -3,6 +3,7 @@ from app.models.parameter_models import MakeStockReq, MakeStockResp
 from app.dependencies.db import get_db_session
 from sqlmodel import Session, select, update
 from app.models.DB_User_stocks_models import UserStocks
+from app.services.redis_service import RedisService
 from app.dependencies.redis_db import get_redis
 from app.models.DB_user_models import User
 
@@ -15,6 +16,7 @@ async def make_stock(
     db: Session = Depends(get_db_session),
     authorization: str = Header(None),
     redis_db=Depends(get_redis),
+    redis_service: RedisService = Depends(),
 ):
 
     if not authorization:
@@ -63,5 +65,7 @@ async def make_stock(
     db.add(new_stock)
     db.commit()
     db.refresh(new_stock)
+
+    await redis_service.update_stock(redis_db, req.stock_name, req.stock_price)
 
     return MakeStockResp(userstock=new_stock, message="나만의 주식 상장 성공!")
