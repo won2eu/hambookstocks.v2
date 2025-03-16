@@ -87,17 +87,19 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-        await logout(); // 백엔드에 로그아웃 요청
-        localStorage.removeItem("token"); // 저장된 토큰 삭제
-        localStorage.removeItem("userName"); // 사용자 이름 삭제
-        setIsLoggedIn(false); // 로그인 상태 변경
-        setUserName(""); // 사용자 이름 초기화
-        alert("로그아웃 되었습니다.");
+      await logout(); // 백엔드에 로그아웃 요청
     } catch (error) {
-        console.error("로그아웃 실패:", error);
-        alert("로그아웃 중 오류가 발생했습니다.");
+      console.error('로그아웃 실패:', error);
+      alert('로그아웃 중 오류가 발생했습니다.');
+    } finally {
+      localStorage.removeItem('token'); // 저장된 토큰 삭제
+      localStorage.removeItem('userName'); // 사용자 이름 삭제
+      setIsLoginOpen(true);
+      setUserName('');
+      setIsLoggedIn(false);
+      alert('로그아웃 되었습니다.');
     }
-};
+  };
 
   return (
     <nav className="navbar">

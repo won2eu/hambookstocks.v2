@@ -1,87 +1,157 @@
 /* MyPage.css */
 
-body {
-    font-family: sans-serif;
-    background-color: #f9f9f9;
-    text-align: center;
-  }
-  
-  .mypage-container {
-    width: 60%;
-    margin: 50px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* 상단: 프로필 박스 */
-  .profile-box {
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    padding: 20px;
-    border: 2px solid black;
-    border-radius: 10px;
-    margin-bottom: 20px; /* 상단과 하단의 간격 */
-  }
-  
-  /* 프로필 이미지 스타일 */
-  .profile-img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: #ddd;
-    margin-right: 20px;
-  }
-  
-  /* 사용자 정보 스타일 */
-  .user-info {
-    text-align: left;
-    font-size: 20px;
-    font-weight: normal;
-  }
-  
-  /* 하단: 버튼 컨테이너 */
-  .buttons-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  /* 버튼 스타일 */
-  button {
-    padding: 10px 20px;
-    font-size: 18px;
-    font-weight: bold;
-    border: 2px solid #ddd;
-    background: white;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-  }
-  
-  /* 버튼 hover 효과 */
-  button:hover {
-    background-color: #7f8686; /* 마우스를 올리면 배경이 진해짐 */
-    color: white; /* 글자색도 흰색으로 */
-  }
-  
-  /* 포커스 상태에서 버튼 스타일 */
-  button:focus {
-    outline: none; /* 포커스 시 기본 outline 제거 */
-    border: 2px solid #4a5568; /* 포커스 시 테두리 색상 변경 */
-  }
-  
-  /* 프로필 버튼 스타일 */
-  .profile-button {
-    background-color: #9da5a5;
-    color: white;
-  }
-  
-  .profile-button:hover {
-    background-color: #7f8686; /* 마우스를 올리면 배경이 진해짐 */
-  }
-  
+/* MyPage에서만 적용되도록 body 스타일 제거 */
+.mypage-container {
+  font-family: sans-serif;
+  background-color: #f9f9f9;
+  text-align: center;
+  width: 80%; /* 너비를 더 넓게 */
+  margin: 80px auto; /* 여백을 더 많이 주어 화면 중앙 배치 */
+  padding: 40px; /* 여백을 더 많이 주어 내용과 테두리 사이의 간격 확대 */
+  background: white;
+  border-radius: 20px; /* 둥근 모서리 더 크게 */
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1); /* 그림자 더 크게 */
+  display: flex;
+  flex-direction: column;
+}
+
+/* 상단: 프로필 박스 */
+.mypage-container .profile-box {
+  display: flex;
+  align-items: center;
+  padding: 30px; /* 내부 여백을 더 많이 */
+  border: 2px solid #ddd; /* 테두리 두께 더 두껍게 */
+  border-radius: 15px; /* 둥근 모서리 */
+  margin-bottom: 50px; /* 프로필 박스와 버튼 간격 확대 */
+  padding-left: 100px; /* 전체를 오른쪽으로 이동 */
+}
+
+/* 프로필 이미지 스타일 */
+.mypage-container .profile-img img {
+  width: 250px; /* 크기 더 크게 */
+  height: 250px; /* 크기 더 크게 */
+  border-radius: 50%;
+  background-color: #ddd;
+  margin-right: 100px; /* 이미지와 정보 사이 간격 더 크게 */
+}
+
+/* 사용자 정보 스타일 */
+.mypage-container .user-info {
+  text-align: left;
+  font-size: 24px; /* 글자 크기 더 크게 */
+  font-weight: normal;
+  flex-grow: 1; /* 오른쪽 공간을 더 차지하도록 설정 */
+}
+
+/* 하단: 버튼 컨테이너 */
+.mypage-container .buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px; /* 버튼 간격 더 넓힘 */
+}
+
+/* 버튼 스타일 */
+.mypage-container button {
+  padding: 20px 40px; /* 버튼 크기 더 크게 */
+  font-size: 22px; /* 글자 크기 더 크게 */
+  font-weight: bold;
+  border: 2px solid #ddd;
+  background: white;
+  cursor: pointer;
+  border-radius: 8px; /* 버튼 테두리 더 둥글게 */
+  min-width: 180px; /* 버튼 최소 너비를 좀 더 크게 설정 */
+}
+
+/* 버튼 색상 */
+.mypage-container .change-pw-btn {
+  background-color: #f1b1b9; 
+  color: #fff;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.mypage-container .change-pw-btn:hover {
+  background-color: #f08b90; /* hover 상태에서 배경색이 약간 더 진해짐 */
+  transform: scale(1.05); /* 크기 약간 키우기 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+}
+
+.mypage-container .make-stock-btn {
+  background-color: #8ac7cf; 
+  color: #fff;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.mypage-container .make-stock-btn:hover {
+  background-color: #71a8b8; /* hover 상태에서 배경색이 약간 더 진해짐 */
+  transform: scale(1.05); /* 크기 약간 키우기 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+}
+
+.mypage-container .gg-btn {
+  background-color: #abcdab; 
+  color: #fff;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.mypage-container .gg-btn:hover {
+  background-color: #97c39a; /* hover 상태에서 배경색이 약간 더 진해짐 */
+  transform: scale(1.05); /* 크기 약간 키우기 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+}
+
+.mypage-container .delete-btn {
+  background-color: #eac3a1; 
+  color: #fff;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.mypage-container .delete-btn:hover {
+  background-color: #d1a179; /* hover 상태에서 배경색이 약간 더 진해짐 */
+  transform: scale(1.05); /* 크기 약간 키우기 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+}
+
+/* 버튼과 폼 간격 넓히기 */
+.buttons-container {
+  margin-bottom: 30px; /* 버튼과 폼 사이의 간격을 30px로 설정 */
+}
+
+/* 폼 컨테이너에 Flexbox 적용 */
+.change-password-form,
+.stock-form {
+  display: flex;
+  justify-content: space-between; /* 요소들이 양쪽 끝으로 배치되도록 설정 */
+  gap: 10px; /* 요소 간 간격을 설정 */
+  flex-wrap: nowrap; /* 한 줄로만 배치되도록 설정 */
+}
+
+/* 입력 필드 크기 조정 */
+.change-password-form input,
+.stock-form input,
+.stock-form textarea {
+  width: 48%; /* 입력 필드를 2개씩 한 줄에 배치할 수 있도록 너비를 48%로 설정 */
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box; /* padding을 포함하여 크기 계산 */
+}
+
+/* 버튼 크기 조정 */
+.change-password-form button,
+.stock-form button {
+  width: 48%; /* 버튼도 2개씩 한 줄에 배치할 수 있도록 너비를 48%로 설정 */
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: #a9a9a9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 버튼 hover 효과 */
+.change-password-form button:hover,
+.stock-form button:hover {
+  background-color: #696969;
+}

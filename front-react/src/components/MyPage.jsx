@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { getMyPage, deleteAccount, gg, changePassword, makeStock } from '../services/MyPageService';
-import '../styles/MyPage.css'; // CSS 파일 import
+import { useNavigate } from 'react-router-dom';
+import '../styles/MyPage.css'; 
 
 const MyPage = () => {
+  const navigate = useNavigate(); // useNavigate 사용
   const [userData, setUserData] = useState(null);
   const token = localStorage.getItem('token'); // 토큰 가져오기
+  const hasAlerted = useRef(false); // 중복 실행 방지
 
   // 상태변수
-  const [showChangePassword, setShowChangePassword] = useState(false); // 비밀번호 변경 폼 보이기 상태
+  const [showChangePassword, setShowChangePassword] = useState(false); 
   const [showStockForm, setShowStockForm] = useState(false);
 
   // 비밀번호 변경 관련
@@ -22,10 +25,31 @@ const MyPage = () => {
   const [stock_description, setStockDescription] = useState('');
 
   useEffect(() => {
+    if (!token) {
+      if (!hasAlerted.current) {
+        hasAlerted.current = true;
+        alert('로그인이 필요한 페이지입니다.');
+      }
+      navigate('/');
+      return; // return 추가 -> `getMyPage()`가 실행되지 않도록 함
+    }
+  
     getMyPage()
       .then((data) => setUserData(data))
-      .catch((err) => console.error(err));
-  }, []);
+      .catch((err) => console.error('데이터 로드 오류:', err));
+  }, [navigate, token]);
+
+  // 폼 상태 토글 함수
+  const handleToggleForm = (formType) => {
+    // 선택된 폼을 보이게 하고, 다른 폼은 숨김
+    if (formType === 'password') {
+      setShowChangePassword(!showChangePassword); // 상태 변수 반전
+      setShowStockForm(false); // 주식 상장 폼 숨기기
+    } else if (formType === 'stock') {
+      setShowStockForm(!showStockForm);
+      setShowChangePassword(false); // 비밀번호 변경 폼 숨기기
+    }
+  };
 
   const handleDeleteAccount = async () => {
     if (window.confirm('정말로 탈퇴하시겠습니까?')) {
@@ -92,25 +116,28 @@ const MyPage = () => {
       <h1>Profile</h1>
       {userData ? (
         <div className="profile-box">
-          <div className="profile-img"></div>
-          <div className="user-info">
-            <p>이름: {userData.name}</p>
-            <p>ID: {userData.login_id}</p>
-            <p>이메일: {userData.email}</p>
-            <p>잔고: {userData.balance} 원</p>
-          </div>
+        <div className="profile-img">
+          {/* 이미지 삽입 */}
+          <img src="/user.png" alt="Profile"/>
         </div>
+        <div className="user-info">
+          <p>이름: {userData.name}</p>
+          <p>ID: {userData.login_id}</p>
+          <p>이메일: {userData.email}</p>
+          <p>잔고: {userData.balance} 원</p>
+        </div>
+      </div>
       ) : (
         <p>Loading...</p>
       )}
       <div className="buttons-container">
-        <button onClick={() => setShowChangePassword(!showChangePassword)}>비밀번호 변경</button>
-        <button onClick={() => setShowStockForm(!showStockForm)}>내 주식 상장</button>
-        <button onClick={handleGG}>GG</button>
-        <button onClick={handleDeleteAccount}>회원 탈퇴</button>
+        <button className="change-pw-btn" onClick={() => handleToggleForm('password')}>비밀번호 변경</button>
+        <button className="make-stock-btn" onClick={() => handleToggleForm('stock')}>내 주식 상장</button>
+        <button className="gg-btn" onClick={handleGG}>GG</button>
+        <button className="delete-btn" onClick={handleDeleteAccount}>회원 탈퇴</button>
       </div>
 
-      {/* showChangePassword 상태가 true일 때만 폼 표시 */}
+      {/* 비밀번호 변경 폼 */}
       {showChangePassword && (
         <div className="change-password-form">
           <input
@@ -138,7 +165,6 @@ const MyPage = () => {
       {/* 주식 상장 폼 */}
       {showStockForm && (
         <div className="stock-form">
-          <h3>나만의 주식 만들기</h3>
           <input
             type="text"
             placeholder="주식 이름"
