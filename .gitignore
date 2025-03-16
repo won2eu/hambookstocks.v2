@@ -7,3 +7,4 @@ record.db
 .env
 db.db
 node_modules/
+README.md

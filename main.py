@@ -12,15 +12,19 @@ from app.routers import (
     getnews_routers,
     make_stock_routers,
     multi_chat_routers,
-    mypage_routers
+    mypage_routers,
 )
 from app.services.trade_service import clear_trend
 from fastapi.staticfiles import StaticFiles
+from apscheduler.schedulers.background import BackgroundScheduler
+from app.services.trade_service import clear_trend
+
 
 create_db_and_table()
 
 app = FastAPI()
 scheduler = BackgroundScheduler()
+
 
 app.add_middleware(  # CORS MIDDLE WARE
     CORSMiddleware,
@@ -35,7 +39,7 @@ app.mount("/front/vendor", StaticFiles(directory="front/vendor"), name="vendor")
 app.mount("/front2/assets", StaticFiles(directory="front2/assets"), name="assets")
 
 
-app.include_router(mystocks_routers.router)  # ROUTER 연결
+app.include_router(mystocks_routers.router)
 app.include_router(auth_routers.router)
 app.include_router(record_routers.router)
 app.include_router(stock_routers.router)
@@ -44,6 +48,7 @@ app.include_router(set_page_routers.router)
 app.include_router(getnews_routers.router)
 app.include_router(make_stock_routers.router)
 app.include_router(multi_chat_routers.router)
+
 app.include_router(mypage_routers.router)
 
 scheduler.add_job(clear_trend, "interval", minutes=60)
