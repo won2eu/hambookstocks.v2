@@ -1,6 +1,7 @@
 from pydantic import BaseModel  # BaseModel 조필4
 from app.models.DB_user_models import User
 from app.models.DB_User_stocks_models import UserStocks
+from typing import Union
 
 
 class AuthSigninReq(BaseModel):
@@ -59,3 +60,8 @@ class TradeStocksResp(BaseModel):
 
 class TradeStockReq(BaseModel):
     stock_name: str
+
+
+class AllStocksResp(BaseModel):
+    stock_level: Union[int, str]
+    stock_description: Union[int, str]
