@@ -22,16 +22,15 @@ available_quantity = 0  # 기본값으로 초기화
 async def buy_stock(
     req: stock_to_buy_and_sell,
     db: Session = Depends(get_db_session),
-    # authorization: str = Header(None),
+    authorization: str = Header(None),
     redis_db=Depends(get_redis),
-    trade_service: TradeService = Depends(),
     redis_service: RedisService = Depends(),
 ):
     # if not authorization:
     #     raise HTTPException(status_code=401, detail="로그인하셔야 합니다.")
 
     # token = authorization.split(" ")[1]
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiXHVhZTQwXHViYmZjXHVjYzJjIiwiaWQiOjQsImVtYWlsIjoia2ltbWMzNDIzQG5hdmVyLmNwbSIsImxvZ2luX2lkIjoiYWEiLCJiYWxhbmNlIjo5OTAwMDAuMCwiZXhwIjoxNzQyMDMwMDQ3fQ.XqG3Ts22XlQSnp0BrOazEG-AMHvrhdkrqmiJsBIol2o"
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiXHVhZTQwXHViYmZjXHVjYzJjIiwiaWQiOjQsImVtYWlsIjoia2ltbWMzNDIzQG5hdmVyLmNwbSIsImxvZ2luX2lkIjoiYWEiLCJiYWxhbmNlIjo5OTAwMDAuMCwiZXhwIjoxNzQyMTIxMDk2fQ.0B7Ha2TZ51yWPd8WwTOAFDJ91p2xc6OD-DsEh6q9R1M"
     if not (login_id := await redis_db.get(token)):
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다")
 
@@ -51,6 +50,9 @@ async def buy_stock(
     trade_info = db.exec(
         select(TradeStocks).where(TradeStocks.stock_name == req.stock_name)
     ).first()
+    trade_info_list = db.exec(
+        select(TradeStocks).where(TradeStocks.stock_name == req.stock_name)
+    ).all()
     transaction_occurred = False
     seller = None
 
@@ -70,25 +72,52 @@ async def buy_stock(
                 db.add(trade_info)
         else:
             # 판매 요청이 올라와 있으면
-            seller = db.exec(
-                select(User).where(User.login_id == trade_info.login_id)
-            ).first()
-            if trade_info.quantity > req.quantity:
-                available_quantity = req.quantity
-                trade_info.quantity -= req.quantity
-                transaction_occurred = True
-            elif trade_info.quantity == req.quantity:
-                available_quantity = req.quantity
-                db.delete(trade_info)
-                transaction_occurred = True
-            else:
-                available_quantity = trade_info.quantity
-                trade_info.quantity = req.quantity - trade_info.quantity
-                trade_info.is_buy = True
-                trade_info.login_id = login_id
-                transaction_occurred = True
+            remaining_quantity = req.quantity  # 사용자가 구매하고자 하는 남은 수량
+            transaction_occurred = False  # 거래 발생 여부
+            trade_transactions = []  # 거래 내역을 저장할 리스트
+
+            for (
+                trade_info
+            ) in trade_info_list:  # 여러 개의 판매 주문을 처리할 수 있도록 반복문 사용
+                if trade_info.quantity > remaining_quantity:
+                    trade_amount = remaining_quantity  # 요청 수량만큼 거래 가능
+                    trade_info.quantity -= (
+                        remaining_quantity  # 판매 주문에서 해당 수량 차감
+                    )
+                    transaction_occurred = True
+                    trade_transactions.append(
+                        (trade_info.login_id, trade_amount)
+                    )  # 거래 정보 저장
+                    break  # 요청한 수량을 전부 처리했으므로 종료
+
+                elif trade_info.quantity == remaining_quantity:
+                    trade_amount = remaining_quantity  # 요청 수량만큼 거래 가능
+                    db.delete(trade_info)  # 판매 주문을 전부 처리했으므로 삭제
+                    transaction_occurred = True
+                    trade_transactions.append(
+                        (trade_info.login_id, trade_amount)
+                    )  # 거래 정보 저장
+                    break  # 요청한 수량을 전부 처리했으므로 종료
+
+                else:  # trade_info.quantity < remaining_quantity
+                    trade_amount = trade_info.quantity  # 판매 주문의 모든 수량을 사용
+                    remaining_quantity -= trade_info.quantity  # 남은 요청 수량 업데이트
+                    db.delete(trade_info)  # 판매 주문 소진으로 삭제
+                    transaction_occurred = True
+                    trade_transactions.append(
+                        (trade_info.login_id, trade_amount)
+                    )  # 거래 정보 저장
+
+            # 요청한 수량이 판매 주문을 모두 소진하고도 남아있는 경우
+            if remaining_quantity > 0:
+                new_trade_info = TradeStocks(
+                    quantity=remaining_quantity,
+                    stock_name=req.stock_name,
+                    is_buy=True,
+                    login_id=login_id,
+                )
+                db.add(new_trade_info)  # 새로운 구매 요청 등록
     else:
-        # trade_info가 없으면 새로운 매수 요청 추가
         trade_info = TradeStocks(
             login_id=login_id,
             stock_name=req.stock_name,
@@ -103,10 +132,28 @@ async def buy_stock(
     구매한 user balance 차감, Mystocks 에 보유주식 추가
     판매한 user balance 증가, Mystocks 에 보유주식 감소
     """
-    if transaction_occurred and seller:
-        # 거래가 발생한 경우에만 사용자 잔액 및 주식 수량 업데이트
-        seller.balance += available_quantity * req.stock_price
-        user.balance -= available_quantity * req.stock_price
+    if transaction_occurred and trade_transactions:
+        user.balance -= sum(
+            trade_amount * req.stock_price for _, trade_amount in trade_transactions
+        )  # 구매자 balance 차감
+
+        # 판매자 balance , 주식 수량 감소
+        for seller_id, trade_amount in trade_transactions:
+            seller = db.exec(select(User).where(User.login_id == seller_id)).first()
+            if seller:
+                seller.balance += trade_amount * req.stock_price  # 판매자 balance 증가
+
+                # 판매자의 주식 수량 감소
+                seller_stock = db.exec(
+                    select(MyStocks).where(
+                        MyStocks.login_id == seller_id,
+                        MyStocks.stock_name == req.stock_name,
+                    )
+                ).first()
+
+                seller_stock.quantity -= trade_amount
+
+        # 구매자의 보유 주식 업데이트
         buyer_stock = db.exec(
             select(MyStocks).where(
                 MyStocks.login_id == login_id, MyStocks.stock_name == req.stock_name
@@ -116,29 +163,15 @@ async def buy_stock(
             buyer_stock = MyStocks(
                 login_id=login_id,
                 stock_name=req.stock_name,
-                quantity=available_quantity,
+                quantity=sum(trade_amount for _, trade_amount in trade_transactions),
             )
             db.add(buyer_stock)
         else:
-            buyer_stock.quantity += available_quantity
-
-        seller_stock = db.exec(
-            select(MyStocks).where(
-                MyStocks.login_id == seller.login_id,
-                MyStocks.stock_name == req.stock_name,
+            buyer_stock.quantity += sum(
+                trade_amount for _, trade_amount in trade_transactions
             )
-        ).first()
-        if not seller_stock:
-            seller_stock = MyStocks(
-                login_id=seller.login_id,
-                stock_name=req.stock_name,
-                quantity=available_quantity,
-            )
-            db.add(seller_stock)
-        else:
-            seller_stock.quantity -= available_quantity
 
-    db.commit()
+        db.commit()
 
     """
     tradestocks 에 is_buy 인것과 quantity 를 불러온걸 활용해서 가격변동
@@ -175,9 +208,8 @@ async def buy_stock(
 async def sell_order(
     req: stock_to_buy_and_sell,
     db=Depends(get_db_session),
-    # authorization: str = Header(None),
+    authorization: str = Header(None),
     redis_db=Depends(get_redis),
-    trade_service: TradeService = Depends(),
     redis_service: RedisService = Depends(),
 ):
     """토큰인증"""
@@ -185,12 +217,10 @@ async def sell_order(
     # if not authorization:
     #     raise HTTPException(status_code=401, detail="인증 토큰이 필요합니다.")
     # token = authorization.split(" ")[1]  # "Bearer <토큰>"에서 토큰만 추출
-    # table에 해당 토큰이 있는지 확인
-    token = ""
+    # # table에 해당 토큰이 있는지 확인
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJiYWxhbmNlIjo5ODUwMDAuMCwibG9naW5faWQiOiJhYSIsIm5hbWUiOiJcdWFlNDBcdWJiZmNcdWNjMmMiLCJpZCI6NCwiZW1haWwiOiJraW1tYzM0MjNAbmF2ZXIuY3BtIiwiZXhwIjoxNzQyMTI2ODA1fQ.JAlGyszDTfWAxzcOl0KkU6uGe42bRoFEcY94G9lBUeY"
     if not (login_id := await redis_db.get(token)):
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다")
-
-    # 토큰 인증 끝
 
     """
     주식 있는지 확인 / 주식 없으면 매도 불가능
@@ -208,7 +238,7 @@ async def sell_order(
         raise HTTPException(status_code=404, detail="보유주식을 찾을 수 없습니다.")
 
     if seller_stock.quantity < req.quantity:
-        raise HTTPException(status_code=400, detail="보유주식이 부족합니다.")
+        raise HTTPException(status_code=400, detail="보유주식 수량이이 부족합니다.")
 
     """
     buy_req 올라온거 trade_stocks에서 찾고, 찾는 수량보다 적게 있으면.. 있는 만큼 판매하고, 없는 만큼 sell_req 를 tradestocks에 올린다
@@ -216,31 +246,19 @@ async def sell_order(
     trade_info = db.exec(
         select(TradeStocks).where(TradeStocks.stock_name == req.stock_name)
     ).first()
+    trade_info_list = db.exec(
+        select(TradeStocks).where(TradeStocks.stock_name == req.stock_name)
+    ).all()
     transaction_occurred = False
-    buyer = None
+
     if trade_info:
-        if trade_info.is_buy:  # 매수 요청이 존재할 때 거래 처리
-            buyer = db.exec(
-                select(User).where(User.login_id == trade_info.login_id)
-            ).first()
-            if trade_info.quantity > req.quantity:
-                available_quantity = req.quantity
-                trade_info.quantity -= req.quantity
-                transaction_occurred = True
-            elif trade_info.quantity == req.quantity:
-                available_quantity = req.quantity
-                db.delete(trade_info)
-                transaction_occurred = True
-            else:
-                available_quantity = trade_info.quantity
-                trade_info.quantity = req.quantity - trade_info.quantity
-                trade_info.is_buy = False
-                trade_info.login_id = login_id
-                transaction_occurred = True
-        else:  # 기존 매도 요청이 있으면 수량 추가
+        # 올라온게 sell 일때
+        if not trade_info.is_buy:  # 동일한 판매자가 존재하는 경우
             if trade_info.login_id == login_id:
+                # 동일한 login_id인 경우 수량만 업데이트
                 trade_info.quantity += req.quantity
             else:
+                # 다른 login_id인 경우 새로운 판매 요청 추가
                 trade_info = TradeStocks(
                     login_id=login_id,
                     stock_name=req.stock_name,
@@ -248,8 +266,52 @@ async def sell_order(
                     quantity=req.quantity,
                 )
                 db.add(trade_info)
+        else:
+            # 올라온게 buy 일때
+            remaining_quantity = req.quantity  # 사용자가 판매하고자 하는 남은 수량
+            transaction_occurred = False  # 거래 발생 여부
+            trade_transactions = []  # 거래 내역을 저장할 리스트
+
+            for trade_info in trade_info_list:  # 여러 개의 매수 주문을 처리할 수 있도록
+                if trade_info.quantity > remaining_quantity:
+                    trade_amount = remaining_quantity  # 요청 수량만큼 거래 가능
+                    trade_info.quantity -= (
+                        remaining_quantity  # 매수 주문에서 해당 수량 차감
+                    )
+                    transaction_occurred = True
+                    trade_transactions.append(
+                        (trade_info.login_id, trade_amount)
+                    )  # 거래 정보 저장
+                    break  # 요청한 수량을 전부 처리했으므로 종료
+
+                elif trade_info.quantity == remaining_quantity:
+                    trade_amount = remaining_quantity  # 요청 수량만큼 거래 가능
+                    db.delete(trade_info)  # 매수 주문을 전부 처리했으므로 삭제
+                    transaction_occurred = True
+                    trade_transactions.append(
+                        (trade_info.login_id, trade_amount)
+                    )  # 거래 정보 저장
+                    break  # 요청한 수량을 전부 처리했으므로 종료
+
+                else:  # trade_info.quantity < remaining_quantity
+                    trade_amount = trade_info.quantity  # 매수 주문의 모든 수량을 사용
+                    remaining_quantity -= trade_info.quantity  # 남은 요청 수량 업데이트
+                    db.delete(trade_info)  # 매수 주문 소진으로 삭제
+                    transaction_occurred = True
+                    trade_transactions.append(
+                        (trade_info.login_id, trade_amount)
+                    )  # 거래 정보 저장
+
+            # 요청한 수량이 매수 주문을 모두 소진하고도 남아있는 경우
+            if remaining_quantity > 0:
+                new_trade_info = TradeStocks(
+                    quantity=remaining_quantity,
+                    stock_name=req.stock_name,
+                    is_buy=False,
+                    login_id=login_id,
+                )
+                db.add(new_trade_info)  # 새로운 판매 요청 등록
     else:
-        # trade_info가 없으면 새로운 매도 요청 추가
         trade_info = TradeStocks(
             login_id=login_id,
             stock_name=req.stock_name,
@@ -259,6 +321,57 @@ async def sell_order(
         db.add(trade_info)
 
     db.commit()
+
+    """
+    구매한 user balance 차감, Mystocks 에 보유주식 추가
+    판매한 user balance 증가, Mystocks 에 보유주식 감소
+    """
+    if transaction_occurred and trade_transactions:
+        seller = db.exec(select(User).where(User.login_id == login_id)).first()
+
+        # 판매자 balance 증가
+        seller.balance += sum(
+            trade_amount * req.stock_price for _, trade_amount in trade_transactions
+        )
+
+        # 여러 구매자의 balance 및 MyStocks 업데이트
+        for buyer_id, trade_amount in trade_transactions:
+            buyer = db.exec(select(User).where(User.login_id == buyer_id)).first()
+            if buyer:
+                buyer.balance -= trade_amount * req.stock_price  # 구매자 balance 차감
+
+                # 구매자의 보유 주식 업데이트
+                buyer_stock = db.exec(
+                    select(MyStocks).where(
+                        MyStocks.login_id == buyer_id,
+                        MyStocks.stock_name == req.stock_name,
+                    )
+                ).first()
+
+                if not buyer_stock:
+                    buyer_stock = MyStocks(
+                        login_id=buyer_id,
+                        stock_name=req.stock_name,
+                        quantity=trade_amount,
+                    )
+                    db.add(buyer_stock)
+                else:
+                    buyer_stock.quantity += trade_amount
+
+        # 판매자의 보유 주식 감소
+        seller_stock = db.exec(
+            select(MyStocks).where(
+                MyStocks.login_id == login_id,
+                MyStocks.stock_name == req.stock_name,
+            )
+        ).first()
+
+        if seller_stock:
+            seller_stock.quantity -= sum(
+                trade_amount for _, trade_amount in trade_transactions
+            )
+
+        db.commit()
 
     """
     tradestocks 에 is_buy 인것과 quantity 를 불러온걸 활용해서 가격변동
@@ -289,34 +402,4 @@ async def sell_order(
     """
     redis_service.update_stock(redis_db, req.stock_name, new_stock_price)
 
-    """
-    구매한 user balance 차감, Mystocks 에 보유주식 감소
-    판매한 user balance 증가, Mystocks 에 보유주식 추가
-    """
-
-    if transaction_occurred and buyer:
-        buyer.balance -= available_quantity * req.stock_price
-        user.balance += available_quantity * req.stock_price
-
-        # 구매자 보유 주식 업데이트
-        buyer_stock = db.exec(
-            select(MyStocks).where(
-                MyStocks.login_id == buyer.login_id,
-                MyStocks.stock_name == req.stock_name,
-            )
-        ).first()
-        if not buyer_stock:
-            buyer_stock = MyStocks(
-                login_id=buyer.login_id,
-                stock_name=req.stock_name,
-                quantity=available_quantity,
-            )
-            db.add(buyer_stock)
-        else:
-            buyer_stock.quantity += available_quantity
-
-        # 판매자 보유 주식 업데이트
-        seller_stock.quantity -= available_quantity
-
-    db.commit()
-    return {"msg": "매도요청 완료"}
+    return {"msg": "매도 요청 완료"}
