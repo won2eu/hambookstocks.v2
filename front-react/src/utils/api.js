@@ -10,6 +10,7 @@ const api = axios.create({
 const publicEndpoints = [
   '/auth/login',
   '/auth/signup',  // 토큰이 필요없는 엔드포인트만 추가해주시길 !
+  
 ];
 
 // 요청 인터셉터: 자동으로 토큰 추가
