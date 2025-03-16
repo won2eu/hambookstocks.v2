@@ -14,6 +14,7 @@ from app.routers import (
     multi_chat_routers,
     mypage_routers,
     get_info_routers,
+    get_stock_info_routers,
 )
 from fastapi.staticfiles import StaticFiles
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -49,6 +50,7 @@ app.include_router(make_stock_routers.router)
 app.include_router(multi_chat_routers.router)
 app.include_router(get_info_routers.router)
 app.include_router(mypage_routers.router)
+app.include_router(get_stock_info_routers.router)
 
 # scheduler.add_job(clear_trend, "interval", minutes=60)
 # scheduler.start()
