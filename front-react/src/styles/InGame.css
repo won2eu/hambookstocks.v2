@@ -1,0 +1,213 @@
+.in-game-container {
+    display: flex;
+    justify-content: space-between; /* 왼쪽, 중앙, 오른쪽 정렬 */
+    gap: 20px;
+    padding: 20px;
+    width: 100vw; /* 전체 화면 너비 */
+    height: 100vh; /* 전체 화면 높이 */
+    margin: 0;
+    box-sizing: border-box; /* 패딩 포함 */
+  }
+  
+  /* 각 섹션의 너비 조정 */
+  .first-section {
+    flex: 1.7; /* 왼쪽 (가장 작은 비율) */
+  }
+  
+  .second-section {
+    flex: 2.3; /* 가운데 (가장 넓음) */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .third-section {
+    flex: 1.3; /* 오른쪽 (왼쪽과 동일) */
+  }
+  
+  /* 공통 스타일 */
+  .first-section,
+  .second-section,
+  .third-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 주식 정보 스타일 */
+  .stock-info,
+  .stock-trade-info,
+  .my-stock-info {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stock-info h2,
+  .stock-trade-info h2,
+  .my-stock-info h2 {
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    color: #333;
+    text-align: center;
+  }
+  
+
+
+  .stock-info-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    gap: 70px; 
+  }
+  
+  /* 두 번째 영역 (주식 차트 & 거래 정보) */
+  .stock-trade-info-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    gap: 120px;
+  }
+  
+  /* 세 번째 영역 (내 주식 정보) */
+  .my-stock-info-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    gap: 140px; 
+  }
+  
+  .stock-info-item span,
+  .stock-trade-info-item span,
+  .my-stock-info-item span {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  /* 주식 차트 스타일 */
+  .stock-chart {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  /* 반응형 디자인 */
+  @media (max-width: 1024px) {
+    .in-game-container {
+      flex-direction: column; /* 작은 화면에서는 세로 정렬 */
+      align-items: center;
+    }
+  
+    .first-section,
+    .second-section,
+    .third-section {
+      width: 90%;
+    }
+  }
+
+  /* 🏦 거래 시스템 전체 컨테이너 */
+.trade-system {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 요소 간 간격 */
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 💰 나의 자산 정보 */
+  .my-balance {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background: #f3f4f6;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  /* 📥 거래 입력 부분 */
+  .trade-input {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* 입력 필드와 총 금액 사이 간격 */
+  }
+  
+  .trade-input input {
+    flex: 0.3; /* 입력 필드가 적절한 크기로 확장 */
+    padding: 10px;
+    font-size: 1rem;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* 💵 총 금액 표시 */
+  .total-price {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    min-width: 120px; /* 최소 크기 지정 */
+    text-align: center;
+  }
+  
+  /* 🔘 매수 / 매도 버튼 */
+  .trade-button {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .buy-button,
+  .sell-button {
+    flex: 1;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  /* 🟢 매수 버튼 */
+  .buy-button {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .buy-button:hover {
+    background-color: #388e3c;
+  }
+  
+  /* 🔴 매도 버튼 */
+  .sell-button {
+    background-color: #e53935;
+    color: white;
+  }
+  
+  .sell-button:hover {
+    background-color: #c62828;
+  }
+  
+  

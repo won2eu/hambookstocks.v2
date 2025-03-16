@@ -20,7 +20,7 @@ class JWTUtil:
 
     def decode_token(self, token: str) -> dict | None:
         try:
-            return jwt.decode(token, SECRET_KEY, algorithms=[ALG])  # 조필8
+            return jwt.decode(token, SECRET_KEY, algorithms=[ALG])
         except:
             pass
         return None
