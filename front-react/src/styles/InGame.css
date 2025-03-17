@@ -54,6 +54,26 @@
     text-align: center;
   }
   
+  .stock-trade-info-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    gap: 60px;
+}
+
+.stock-trade-info-item span {
+    flex: 1;
+    text-align: center;
+    white-space: nowrap; /* ✅ 줄바꿈 방지 */
+    overflow: hidden; /* ✅ 넘치는 텍스트 숨김 */
+    text-overflow: ellipsis; /* ✅ 넘치는 텍스트 ... 처리 */
+    min-width: 100px; /* ✅ 최소 너비 설정 */
+}
+
 
 
   .stock-info-item {
@@ -71,6 +91,10 @@
     flex: 1;
     text-align: center;
 }
+
+  .stock-name {
+    cursor: pointer;
+  }
   
   /* 두 번째 영역 (주식 차트 & 거래 정보) */
   .stock-trade-info-item {

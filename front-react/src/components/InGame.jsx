@@ -2,6 +2,7 @@ import '../styles/InGame.css';
 import { buy_request, sell_request, get_my_balance } from '../services/InGameService';
 import { useState, useEffect, useRef } from 'react'; // useState 추가 필요
 import { connectStockWebSocket, closeWebSocket } from '../services/stock_websocket';
+import { get_stock_detail, get_trade_stocks } from '../services/InGameService';
 
 export default function InGame() {
   const [balance, setBalance] = useState([]);
@@ -9,6 +10,8 @@ export default function InGame() {
   const [quantity, setQuantity] = useState(1); // 수량
   const [price, setPrice] = useState(0); // 가격
   const [stockInfo, setStockInfo] = useState([]);
+  const [tradeQuantity, setTradeQuantity] = useState(0);
+  const [isBuy, setIsBuy] = useState(true);
 
   useEffect(() => {
     connectStockWebSocket(setStockInfo);
@@ -55,10 +58,17 @@ export default function InGame() {
     }
   };
 
-  const handleStockClick = (selectedStockName, selectedStockPrice) => {
+  const handleStockClick = async (selectedStockName, selectedStockPrice) => {
     setStockName(selectedStockName);
     setPrice(selectedStockPrice);
-    console.log(selectedStockName, selectedStockPrice);
+
+    try {
+      const trade_stocks = await get_trade_stocks(selectedStockName);
+      setTradeQuantity(trade_stocks.stock_quantity); //주식 상장하면 tradestocks에 올려야됨
+      setIsBuy(trade_stocks.is_buy);
+    } catch (error) {
+      console.error('주식 매도/매수 조회 실패', error);
+    }
   };
 
   const handleQuantityChange = (e) => {
@@ -85,12 +95,12 @@ export default function InGame() {
             <div
               key={stockName}
               className="stock-info-item"
-              onClick={() => handleStockClick(stockName, stockPrice)}
+              onClick={async () => await handleStockClick(stockName, stockPrice)}
             >
-              <span>{stockName}</span>
+              <span className="stock-name">{stockName}</span>
               <span>{stockPrice}</span>
-              <span></span>
-              <span></span>
+              <span>{stockDetails[stockName]?.stock_level || '-'}</span>
+              <span>{stockDetails[stockName]?.stock_description || '-'}</span>
             </div>
           ))}
         </div>
@@ -110,6 +120,12 @@ export default function InGame() {
             <span>주식 가격</span>
             <span>주식 수량</span>
             <span>매도 / 매수</span>
+          </div>
+          <div className="stock-trade-info-item">
+            <span>{stockName}</span>
+            <span>{price}</span>
+            <span>{tradeQuantity}</span>
+            <span>{isBuy ? '매수' : '매도'}</span>
           </div>
           <div className="trade-system">
             <div className="my-balance">

@@ -10,16 +10,16 @@ from sqlmodel import select
 router = APIRouter(prefix="/get_info")
 
 
-@router.get("/trade_stocks", response_model=TradeStocksResp)
+@router.get("/trade_stocks/{stock_name}", response_model=TradeStocksResp)
 async def get_trade_stocks(
-    req: TradeStockReq,
+    stock_name: str,
     authorization: str = Header(None),
     redis_db=Depends(get_redis),
     db=Depends(get_db_session),
 ) -> TradeStocksResp:
     token = authorization.split(" ")[1]
     if not token:
-        raise HTTPException(status_code=401, deatil="토큰이 필요합니다.")
+        raise HTTPException(status_code=401, detail="토큰이 필요합니다.")
     # 토큰 검사
 
     login_id = await redis_db.get(token)
@@ -28,7 +28,7 @@ async def get_trade_stocks(
 
     # TradeStocks 에서 row 전부 불러오기
     trade_info_list = db.exec(
-        select(TradeStocks).where(TradeStocks.stock_name == req.stock_name)
+        select(TradeStocks).where(TradeStocks.stock_name == stock_name)
     ).all()
 
     if not trade_info_list:
@@ -41,16 +41,16 @@ async def get_trade_stocks(
     return TradeStocksResp(stock_quantity=total_quantity, is_buy=is_buy_value)
 
 
-@router.get("/stock_detail")
+@router.get("/stock_detail/{stock_name}")
 async def get_stock_detail(
-    req: TradeStockReq,
+    stock_name: str,
     authorization: str = Header(None),
     redis_db=Depends(get_redis),
     db=Depends(get_db_session),
 ) -> AllStocksResp:
     token = authorization.split(" ")[1]
     if not token:
-        raise HTTPException(status_code=401, deatil="토큰이 필요합니다.")
+        raise HTTPException(status_code=401, detail="토큰이 필요합니다.")
     # 토큰 검사
 
     login_id = await redis_db.get(token)
@@ -58,7 +58,7 @@ async def get_stock_detail(
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
 
     user_stock = db.exec(
-        select(UserStocks).where(UserStocks.stock_name == req.stock_name)
+        select(UserStocks).where(UserStocks.stock_name == stock_name)
     ).first()
 
     if user_stock:
@@ -68,12 +68,10 @@ async def get_stock_detail(
         )
 
     market_stock = db.exec(
-        select(MarketStocks).where(MarketStocks.stock_name == req.stock_name)
+        select(MarketStocks).where(MarketStocks.stock_name == stock_name)
     ).first()
 
     if market_stock:
         return AllStocksResp(
-            stock_level="-", stock_description=f"{req.stock_name} is good :)"
+            stock_level="-", stock_description=f"{stock_name} is good :)"
         )
-
-    raise HTTPException(status_code=404, detail="Stock not found")
