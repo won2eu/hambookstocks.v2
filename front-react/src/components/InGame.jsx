@@ -12,6 +12,12 @@ export default function InGame() {
   const [stockInfo, setStockInfo] = useState([]);
   const [tradeQuantity, setTradeQuantity] = useState(0);
   const [isBuy, setIsBuy] = useState(true);
+  const [isStockSelected, setIsStockSelected] = useState(false); // 주식이 선택되었는지 여부
+  const [stockDetail, setStockDetail] = useState([]);
+
+  
+
+
 
   useEffect(() => {
     connectStockWebSocket(setStockInfo);
@@ -58,7 +64,21 @@ export default function InGame() {
     }
   };
 
+  const handleStockDetail = async (stockName) => {
+    try {
+      const detail = await get_stock_detail(stockName);
+      setStockDetail(detail);
+    } catch (error) {
+      console.error('주식 상세 조회 실패', error);
+    }
+  };
+
   const handleStockClick = async (selectedStockName, selectedStockPrice) => {
+    if (stockName === selectedStockName && isStockSelected) {
+      setIsStockSelected(false);
+      return;
+    }
+    setIsStockSelected(false);
     setStockName(selectedStockName);
     setPrice(selectedStockPrice);
 
@@ -66,6 +86,12 @@ export default function InGame() {
       const trade_stocks = await get_trade_stocks(selectedStockName);
       setTradeQuantity(trade_stocks.stock_quantity); //주식 상장하면 tradestocks에 올려야됨
       setIsBuy(trade_stocks.is_buy);
+
+      await handleStockDetail(selectedStockName);
+
+      setTimeout(() => {
+        setIsStockSelected(true);
+      }, 100);
     } catch (error) {
       console.error('주식 매도/매수 조회 실패', error);
     }
@@ -87,8 +113,6 @@ export default function InGame() {
           <div className="stock-info-item">
             <span>주식 이름</span>
             <span>주식 가격</span>
-            <span>주식 레벨</span>
-            <span>주식 설명</span>
           </div>
 
           {Object.entries(stockInfo).map(([stockName, stockPrice]) => (
@@ -99,11 +123,23 @@ export default function InGame() {
             >
               <span className="stock-name">{stockName}</span>
               <span>{stockPrice}</span>
-              <span>{stockDetails[stockName]?.stock_level || '-'}</span>
-              <span>{stockDetails[stockName]?.stock_description || '-'}</span>
             </div>
           ))}
         </div>
+        <div className={`stock-detail ${isStockSelected ? "show" : ""}`}>
+        {stockDetail && (
+          <>
+            <h3>{stockName}</h3>
+            <div className="stock-info-container">
+              <span className="label">주식 레벨 :</span>
+              <span className="value">{stockDetail.stock_level}</span>
+
+              <span className="label">주식 설명 :</span>
+              <span className="value">{stockDetail.stock_description}</span>
+            </div>
+          </>
+        )}
+      </div>
       </div>
       <div className="second-section">
         <div className="stock-chart">

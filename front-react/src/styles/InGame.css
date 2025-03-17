@@ -34,6 +34,9 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
+  .first-section {
+    position: relative;
+  }
   
   /* 주식 정보 스타일 */
   .stock-info,
@@ -73,6 +76,83 @@
     text-overflow: ellipsis; /* ✅ 넘치는 텍스트 ... 처리 */
     min-width: 100px; /* ✅ 최소 너비 설정 */
 }
+
+.stock-detail {
+  position: absolute;
+  bottom: 160px;
+  border-radius: 15px;
+  left: 0; /* ✅ 항상 first-section의 왼쪽에 고정 */
+  width: 90%; /* ✅ 기본 너비 */
+  max-width: 500px; /* ✅ 최대 너비 제한 (너무 커지는 것 방지) */
+  height: 30%;
+  background: #f8f9fa;
+  border: 2px solid #aaa;
+  padding: 20px;
+  box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+  transform: translateX(-105%); /* ✅ 항상 왼쪽에서 시작 */
+  transition: transform 0.5s ease-out;
+  z-index: 1000;
+}
+
+.stock-detail.show {
+  transform: translateX(0); /* ✅ 왼쪽에서 오른쪽으로 슬라이드 */
+}
+.stock-detail p {
+  font-size: 2rem;
+  color: #444;
+  margin-bottom: 5px;
+  
+}
+
+.stock-info-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* ✅ 왼쪽 = 항목명, 오른쪽 = 값 */
+  gap: 10px;
+  align-items: center;
+}
+/* 왼쪽 항목 라벨 */
+.stock-info-container span.label {
+  display: inline-block; /* ✅ 글자의 크기만큼만 배경 적용 */
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white; /* ✅ 글자 색상을 흰색으로 변경 */
+  background-color: #7ea5cc; /* ✅ 배경색 */
+  padding: 2px 6px; /* ✅ 최소한의 패딩으로 배경이 글자만 감싸도록 설정 */
+  border-radius: 5px; /* ✅ 둥근 모서리 추가 */
+}
+
+/* 오른쪽 값 */
+.stock-info-container span.value {
+  display: inline-block; /* ✅ 글자의 크기만큼만 배경 적용 */
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: rgb(0, 0, 0); /* ✅ 글자 가독성을 위해 흰색으로 변경 */
+  background-color: #ccd9e6; /* ✅ 배경색 (오렌지) */
+  padding: 2px 6px; /* ✅ 최소한의 패딩으로 배경이 글자만 감싸도록 설정 */
+  border-radius: 5px; /* ✅ 둥근 모서리 추가 */
+  text-align: center;
+  white-space: normal; /* ✅ 줄바꿈 가능하도록 설정 */
+  word-wrap: break-word;
+}
+
+.stock-detail h3 {
+  font-size: 2.7rem; /* ✅ 좀 더 크게 조정 */
+  font-weight: bold;
+  color: #222; /* ✅ 기본 검정보다 조금 연한 다크 그레이 */
+  text-align: center; /* ✅ 중앙 정렬 */
+  margin-bottom: 30px;
+  margin-top: 10px;
+
+  /* ✅ 텍스트 효과 */
+  letter-spacing: 2px; /* ✅ 자간 추가 */
+  text-transform: uppercase; /* ✅ 모든 글자를 대문자로 */
+
+  /* ✅ 시크한 하단 라인 추가 */
+  border-bottom: 3px solid #666;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
 
 
 
