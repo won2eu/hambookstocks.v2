@@ -1,6 +1,7 @@
 from pydantic import BaseModel  # BaseModel 조필4
 from app.models.DB_user_models import User
 from app.models.DB_User_stocks_models import UserStocks
+from typing import Union
 
 
 class AuthSigninReq(BaseModel):
@@ -50,3 +51,17 @@ class ChangePwd(BaseModel):
     origin_pwd: str
     new_pwd: str
     check_new_pwd: str
+
+
+class TradeStocksResp(BaseModel):
+    stock_quantity: int
+    is_buy: bool | None = None
+
+
+class TradeStockReq(BaseModel):
+    stock_name: str
+
+
+class AllStocksResp(BaseModel):
+    stock_level: Union[int, str]
+    stock_description: Union[int, str]
