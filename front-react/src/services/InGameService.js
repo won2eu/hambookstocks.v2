@@ -5,7 +5,7 @@ export const buy_request = async (stock_name, quantity, stock_price) => {
         const response = await api.post("/trade/buy_request", {
             stock_name: stock_name,
             stock_price: stock_price,
-            quantity: quantity,
+            quantity: quantity
         });
         return response.data; // 리턴값 메시지밖에 없음
     } catch (error) {

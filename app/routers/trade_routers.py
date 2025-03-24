@@ -60,6 +60,9 @@ async def buy_stock(
             if trade_info.login_id == login_id:
                 # 동일한 login_id인 경우 수량만 업데이트
                 trade_info.quantity += req.quantity
+
+                db.commit()
+                return {"msg": "매수 요청 완료"}
             else:
                 # 다른 login_id인 경우 새로운 요청 추가
                 trade_info = TradeStocks(
@@ -236,7 +239,7 @@ async def sell_order(
         raise HTTPException(status_code=404, detail="보유주식을 찾을 수 없습니다.")
 
     if seller_stock.quantity < req.quantity:
-        raise HTTPException(status_code=400, detail="보유주식 수량이이 부족합니다.")
+        raise HTTPException(status_code=400, detail="보유주식 수량이 부족합니다.")
 
     """
     buy_req 올라온거 trade_stocks에서 찾고, 찾는 수량보다 적게 있으면.. 있는 만큼 판매하고, 없는 만큼 sell_req 를 tradestocks에 올린다
@@ -398,6 +401,6 @@ async def sell_order(
     """
     변동된 가격을 redis에 저장함
     """
-    redis_service.update_stock(redis_db, req.stock_name, new_stock_price)
+    await redis_service.update_stock(redis_db, req.stock_name, new_stock_price)
 
     return {"msg": "매도 요청 완료"}

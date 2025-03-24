@@ -6,6 +6,7 @@ from app.models.DB_User_stocks_models import UserStocks
 from app.services.redis_service import RedisService
 from app.dependencies.redis_db import get_redis
 from app.models.DB_user_models import User
+from app.models.DB_trade_models import TradeStocks
 
 router = APIRouter(prefix="/mypage")
 
@@ -62,7 +63,16 @@ async def make_stock(
         stock_quantity=req.stock_quantity,
         stock_description=req.stock_description,
     )
+
+    update_trade_stock = TradeStocks(
+        login_id=login_id,
+        stock_name=req.stock_name,
+        is_buy=False,  # 만들면 판매로 올려야됨
+        quantity=req.stock_quantity,
+    )
+
     db.add(new_stock)
+    db.add(update_trade_stock)
     db.commit()
     db.refresh(new_stock)
 

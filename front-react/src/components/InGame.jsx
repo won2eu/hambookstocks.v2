@@ -3,6 +3,7 @@ import { buy_request, sell_request, get_my_balance } from '../services/InGameSer
 import { useState, useEffect, useRef } from 'react'; // useState 추가 필요
 import { connectStockWebSocket, closeWebSocket } from '../services/stock_websocket';
 import { get_stock_detail, get_trade_stocks } from '../services/InGameService';
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 export default function InGame() {
   const [balance, setBalance] = useState([]);
@@ -10,14 +11,11 @@ export default function InGame() {
   const [quantity, setQuantity] = useState(1); // 수량
   const [price, setPrice] = useState(0); // 가격
   const [stockInfo, setStockInfo] = useState([]);
+  const [stockHistory, setStockHistory] = useState([]);
   const [tradeQuantity, setTradeQuantity] = useState(0);
   const [isBuy, setIsBuy] = useState(true);
   const [isStockSelected, setIsStockSelected] = useState(false); // 주식이 선택되었는지 여부
   const [stockDetail, setStockDetail] = useState([]);
-
-  
-
-
 
   useEffect(() => {
     connectStockWebSocket(setStockInfo);
@@ -26,6 +24,23 @@ export default function InGame() {
       closeWebSocket();
     };
   }, []);
+
+  useEffect(() => {
+    setStockHistory([]); // ✅ 종목 변경 시 기존 데이터 초기화
+  }, [stockName]); // stockName이 바뀔 때마다 실행
+
+  useEffect(() => {
+    if (stockName && stockInfo[stockName]) {
+      // stockName에 해당하는 데이터만 추가
+      const now = new Date();
+      const time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+
+      setStockHistory((prevHistory) => [
+        ...prevHistory.slice(-30), // 최근 30개 데이터만 유지
+        { time, price: stockInfo[stockName] },
+      ]);
+    }
+  }, [stockName, stockInfo]);
 
   useEffect(() => {
     const GetBalance = async () => {
@@ -48,7 +63,7 @@ export default function InGame() {
       return;
     }
     try {
-      const response = await buy_request(stockName, price, quantity);
+      const response = await buy_request(stockName, quantity, price);
       console.log(response);
     } catch (error) {
       console.error('매수 실패', error);
@@ -57,7 +72,7 @@ export default function InGame() {
 
   const handleSell = async () => {
     try {
-      const response = await sell_request(stockName, quantity, price);
+      const response = await sell_request(stockName, quantity, quantity);
       console.log(response);
     } catch (error) {
       console.error('매도 실패', error);
@@ -100,6 +115,7 @@ export default function InGame() {
   const handleQuantityChange = (e) => {
     const newQuantity = Number(e.target.value);
     setQuantity(newQuantity);
+    console.log('입력된 수량:', newQuantity);
   };
 
   const totalPrice = price * quantity;
@@ -126,26 +142,39 @@ export default function InGame() {
             </div>
           ))}
         </div>
-        <div className={`stock-detail ${isStockSelected ? "show" : ""}`}>
-        {stockDetail && (
-          <>
-            <h3>{stockName}</h3>
-            <div className="stock-info-container">
-              <span className="label">주식 레벨 :</span>
-              <span className="value">{stockDetail.stock_level}</span>
+        <div className={`stock-detail ${isStockSelected ? 'show' : ''}`}>
+          {stockDetail && (
+            <>
+              <h3>{stockName}</h3>
+              <div className="stock-info-container">
+                <span className="label">주식 레벨 :</span>
+                <span className="value">{stockDetail.stock_level}</span>
 
-              <span className="label">주식 설명 :</span>
-              <span className="value">{stockDetail.stock_description}</span>
-            </div>
-          </>
-        )}
-      </div>
+                <span className="label">주식 설명 :</span>
+                <span className="value">{stockDetail.stock_description}</span>
+              </div>
+            </>
+          )}
+        </div>
       </div>
       <div className="second-section">
         <div className="stock-chart">
           {' '}
           {/* 주식 차트 */}
           <h2>주식 차트</h2>
+          {stockHistory.length > 0 ? (
+            <div className="chart-container">
+              <LineChart width={800} height={400} data={stockHistory}>
+                <XAxis dataKey="time" />
+                <YAxis />
+                <Tooltip />
+                <CartesianGrid stroke="#ccc" />
+                <Line type="monotone" dataKey="price" stroke="#8884d8" />
+              </LineChart>
+            </div>
+          ) : (
+            <p>주식 종목을 클릭하여 차트를 확인해보세요.</p>
+          )}
         </div>
         <div className="stock-trade-info">
           {' '}

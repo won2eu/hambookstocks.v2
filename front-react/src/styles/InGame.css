@@ -319,4 +319,64 @@
     background-color: #c62828;
   }
   
-  
+  /* 여기서 부터 주식차트 부분 */
+ 
+  /* 🔹 차트 전체를 중앙 정렬 */
+
+
+/* 🔹 차트가 중앙에서 표시되도록 조정 */
+.chart-container {
+  width: 100%;
+  max-width: 800px;  /* 🔥 차트 크기 제한 */
+  display: flex;
+  justify-content: center;
+}
+
+
+/* 🔹 차트 내부 스타일 */
+.chart-wrapper {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  max-width: 800px;  /* 🔥 차트 크기 제한 */
+}
+
+/* 🔹 차트 툴팁 스타일 */
+.recharts-tooltip-wrapper {
+  background: white !important;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+}
+
+/* 🔹 X축과 Y축 글씨 스타일 */
+.recharts-cartesian-axis-tick {
+  font-size: 12px;
+  font-weight: bold;
+  color: #555;
+}
+
+/* 🔹 차트 내부 그리드 */
+.recharts-cartesian-grid line {
+  stroke: #e0e0e0;
+}
+
+/* 🔹 반응형 디자인 */
+@media (max-width: 768px) {
+  .stock-chart-container {
+    max-width: 100%;
+    padding: 15px;
+  }
+  .chart-title {
+    font-size: 18px;
+  }
+  .chart-wrapper {
+    width: 95%;
+  }
+}
+
+
