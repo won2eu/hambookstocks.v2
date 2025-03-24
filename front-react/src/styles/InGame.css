@@ -66,6 +66,11 @@
     border: 1px solid #ddd;
     gap: 70px; 
   }
+
+  .stock-info-item span {
+    flex: 1;
+    text-align: center;
+}
   
   /* 두 번째 영역 (주식 차트 & 거래 정보) */
   .stock-trade-info-item {
@@ -210,4 +215,21 @@
     background-color: #c62828;
   }
   
-  
+
+/* 내 보유 주식 항목 */
+.my-stock-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  gap: 70px; 
+}
+
+.my-stock-item span {
+  flex: 1;
+  text-align: center;
+}
+

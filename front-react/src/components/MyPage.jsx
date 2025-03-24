@@ -61,9 +61,11 @@ const MyPage = () => {
   };
 
   const handleGG = async () => {
-    await gg(token);
-    alert('GG 완료');
-    window.location.reload();
+    if (window.confirm('정말로 ㅈㅈ하시겠습니까?')) {
+      await gg(token);
+      alert('GG 완료! 당신의 앞날을 응원합니다.');
+      window.location.reload();
+    }
   };
 
   const handleChangePassword = async () => {

@@ -1,6 +1,27 @@
 import '../styles/InGame.css';
+import React, { useEffect, useState } from 'react';
+import { getMyStocks } from '../services/InGame';
 
 export default function InGame() {
+  const [mystocks, setMystocks] = useState([]);  // 보유 주식 정보 상태
+  const [error, setError] = useState(null);  // 에러 상태
+
+  useEffect(() => {
+    const fetchStocks = async () => {
+      try {
+        const stocks = await getMyStocks();
+        /*console.log("📊 가져온 주식 데이터:", stocks); // 가져온 데이터를 확인*/
+        setMystocks(stocks);  // mystocks 상태 업데이트
+        /*console.log("📊 mystocks 상태값:", stocks); // 상태 확인*/
+      } catch (err) {
+        console.error("❌ API 에러:", err.message);
+        setError("주식 정보를 가져오는 데 실패했습니다.");  // 에러 메시지 설정
+      }
+    };
+  
+    fetchStocks();  // 컴포넌트 렌더링 시 호출
+  }, []);
+
   return (
     <div className="in-game-container">
       <div className="first-section">
@@ -59,6 +80,17 @@ export default function InGame() {
             <span>주식 이름</span>
             <span>주식 수량</span>
           </div>
+          {/* 내 보유 주식 정보 렌더링 */}
+          {mystocks.length > 0 ? (
+            mystocks.map((stock) => (
+              <div key={stock.id} className="my-stock-item">
+                <span>{stock.stock_name}</span>
+                <span>{stock.quantity}</span> {/* 주식 수량 */}
+              </div>
+            ))
+          ) : (
+            <div>주식 정보가 없습니다.</div>
+          )}
         </div>
       </div>
     </div>
