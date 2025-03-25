@@ -17,7 +17,7 @@ class WebSocketService {
       this.guestId = guestId;
 
       // 기본 연결
-      this.ws = new WebSocket('ws://localhost:8000/multichat/ws');
+      this.ws = new WebSocket('ws://15.165.205.43:8000/multichat/ws');
       // 연결 성공 시 인증 데이터 전송
       console.log(this.ws);
       this.ws.onopen = () => {
