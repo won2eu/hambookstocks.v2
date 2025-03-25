@@ -28,7 +28,7 @@ scheduler = BackgroundScheduler()
 
 app.add_middleware(  # CORS MIDDLE WARE
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://www.hambookstocks.store"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
