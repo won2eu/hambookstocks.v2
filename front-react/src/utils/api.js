@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000", // FastAPI 서버 주소
+  baseURL: "http://15.165.205.43:8000", // FastAPI 서버 주소
   headers: {
     "Content-Type": "application/json",
   },
