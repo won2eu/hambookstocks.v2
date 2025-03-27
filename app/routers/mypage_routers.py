@@ -94,8 +94,12 @@ async def gg(
     if not login_id:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
 
+    my_stock = db.exec(select(MyStocks).where(MyStocks.login_id == login_id)).first()
+    await redis_service.delete_stock(redis_db, my_stock.stock_name)
+
     service = AccountService(db)
     # login_id가 상장한 주식을 갖고 있는 사람 주식 모두 삭제
+
     service.delete_victim_stock(login_id)
     service._delete_user_stocks(login_id)
     service._delete_user_owned_stocks(login_id)  # 본인 보유 주식 삭제
@@ -104,8 +108,6 @@ async def gg(
     )  # 잔고 다시 업데이트
 
     db.commit()
-    my_stock = db.exec(select(MyStocks).where(MyStocks.login_id == login_id)).first()
-    await redis_service.delete_stock(redis_db, my_stock.stock_name)
 
     return {"message": "gg"}
 
