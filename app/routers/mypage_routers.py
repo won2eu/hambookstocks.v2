@@ -63,13 +63,13 @@ async def delete_account(
     if not login_id:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다.")
 
+    my_stock = db.exec(select(MyStocks).where(MyStocks.login_id == login_id)).first()
+    await redis_service.delete_stock(redis_db, my_stock.stock_name)
+
     service = AccountService(db)
     service.delete_victim_stock(login_id)
     service.delete_account(login_id)
     await redis_db.delete(redis_db, token)  # redis에서 삭제
-    my_stock = db.exec(select(MyStocks).where(MyStocks.login_id == login_id)).first()
-
-    await redis_service.delete_stock(redis_db, my_stock.stock_name)
 
     return {"message": "User account deleted"}
 
