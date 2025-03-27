@@ -13,7 +13,7 @@ DBNAME = os.environ.get("MYSQL_DBNAME")
 
 DB_URL = f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
 
-DB_ENGINE = create_engine(DB_URL, echo=True)
+DB_ENGINE = create_engine(DB_URL, echo=True, pool_pre_ping=True)
 
 
 def get_db_session():
