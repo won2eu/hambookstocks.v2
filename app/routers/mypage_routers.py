@@ -17,7 +17,7 @@ router = APIRouter(prefix="/mypage")
 """
 
 
-@router.get("/", response_model=MyPageResp)
+@router.get("", response_model=MyPageResp)
 async def get_mypage(
     authorization: str = Header(None),
     redis_db=Depends(get_redis),

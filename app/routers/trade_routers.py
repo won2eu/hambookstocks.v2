@@ -285,6 +285,7 @@ async def sell_order(
                     trade_transactions.append(
                         (trade_info.login_id, trade_amount)
                     )  # 거래 정보 저장
+                    remaining_quantity = 0
                     break  # 요청한 수량을 전부 처리했으므로 종료
 
                 elif trade_info.quantity == remaining_quantity:
@@ -294,6 +295,7 @@ async def sell_order(
                     trade_transactions.append(
                         (trade_info.login_id, trade_amount)
                     )  # 거래 정보 저장
+                    remaining_quantity = 0
                     break  # 요청한 수량을 전부 처리했으므로 종료
 
                 else:  # trade_info.quantity < remaining_quantity
