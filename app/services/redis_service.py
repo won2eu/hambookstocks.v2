@@ -28,3 +28,10 @@ class RedisService:
         stock_price: float,
     ):
         await redis_db.hset("stocks", stock_name, stock_price)
+
+    async def delete_stock(
+        self,
+        redis_db,
+        stock_name: str,
+    ):
+        await redis_db.hdel("stocks", stock_name)
