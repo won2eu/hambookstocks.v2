@@ -6,6 +6,8 @@ from app.models.parameter_models import MyPageResp, ChangePwd
 from app.services.mypage_service import AccountService
 from app.services.auth_service import AuthService
 from sqlmodel import select, update
+from app.services.redis_service import RedisService
+from app.models.DB_mystocks_models import MyStocks
 
 router = APIRouter(prefix="/mypage")
 
@@ -51,6 +53,7 @@ async def delete_account(
     authorization: str = Header(None),
     db=Depends(get_db_session),
     redis_db=Depends(get_redis),
+    redis_service: RedisService = Depends(),
 ):
     token = authorization.split(" ")[1]
     if not token:
@@ -63,7 +66,10 @@ async def delete_account(
     service = AccountService(db)
     service.delete_victim_stock(login_id)
     service.delete_account(login_id)
-    await redis_db.delete(token)  # redis에서 삭제
+    await redis_db.delete(redis_db, token)  # redis에서 삭제
+    my_stock = db.exec(select(MyStocks).where(MyStocks.login_id == login_id)).first()
+
+    await redis_service.delete_stock(redis_db, my_stock.stock_name)
 
     return {"message": "User account deleted"}
 
@@ -78,6 +84,7 @@ async def gg(
     authorization: str = Header(None),
     db=Depends(get_db_session),
     redis_db=Depends(get_redis),
+    redis_service: RedisService = Depends(),
 ):
     token = authorization.split(" ")[1]
     if not token:
@@ -97,6 +104,8 @@ async def gg(
     )  # 잔고 다시 업데이트
 
     db.commit()
+    my_stock = db.exec(select(MyStocks).where(MyStocks.login_id == login_id)).first()
+    await redis_service.delete_stock(redis_db, my_stock.stock_name)
 
     return {"message": "gg"}
 
