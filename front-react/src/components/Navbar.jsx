@@ -108,28 +108,38 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="logo">HAMBOOK-STOCKS</div>
+      <div className="logo">
+        <a href="/">
+          <img src="/Vector.svg" alt="로고" className="logo-img"></img>
+        </a>
+      </div>
       <div className="menu">
-        <a href="/" className="menu-item">
+        {/* <a href="/" className="menu-item">
           Home
-        </a>
-        <a href="#" className="menu-item" onClick={OpenGameExplain}>
+        </a> */}
+        {/* <a href="#" className="menu-item" onClick={OpenGameExplain}>
           How To Play
-        </a>
-        {isGameExplainOpen && (
+        </a> */}
+        {/* {isGameExplainOpen && (
           <div className="game-explain">
             <p>1. 주식을 사고팝니다.</p>
             <p>2. 시장 상황을 분석합니다.</p>
             <p>3. 수익을 극대화하세요!</p>
             <p>4. 나만의 주식을 상장해보세요!</p>
           </div>
-        )}
+        )} */}
         <Link to="/mypage" className="menu-item">
-          MyPage
-        </Link>{' '}
+          <img src="/MYPAGE.svg" alt="이미지" className="mypage-img"></img>
+        </Link>
+
         {/* link로 수정 */}
         <button className="menu-item" onClick={toggleLoginPanel}>
-          {isLoggedIn ? 'My Account' : 'Login'} {/* 로그인 여부에 따라 버튼 이름 변경 */}
+          {isLoggedIn ? (
+            'My Account'
+          ) : (
+            <img src="/LOGIN.svg" alt="이미지" className="login-img"></img>
+          )}{' '}
+          {/* 로그인 여부에 따라 버튼 이름 변경 */}
         </button>
       </div>
 

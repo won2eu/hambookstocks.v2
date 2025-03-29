@@ -1,9 +1,9 @@
 .rank-slider-section {
-    background-color: #ffffff;
-  }
+  background-color: #1F2532;
+}
   
 .rank-card {
-    background-color: rgba(186, 202, 215, 0.5);
+    background-color: #1F2532;
     border-radius: 12px;
     width: 500px; /* 적당한 카드 크기 */
     height: 300px; /* 높이 추가해서 균형 맞춤 */

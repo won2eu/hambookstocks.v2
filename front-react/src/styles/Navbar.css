@@ -1,38 +1,45 @@
 .navbar {
-    background-color: white;
-    border-bottom: 1px solid #e2e8f0;
-    padding: 30px;
+    position: relative;
+    background-color: #1F2532;
+    padding: 65px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
   }
   
   .logo {
-    font-size: 30px;
-    font-weight: bold;
-    color: #2d3748;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .logo-img{
+    height: 38px;        /* 부모 높이에 맞추기 */
   }
   
   .menu {
     display: flex;
-    gap: 24px;
+    gap: 47px;
+    margin-right: 90px;
   }
   
   .menu-item {
-    text-decoration: none;
-    color: #4a5568;
-    background: none;  /* 버튼 배경 없앰 */
-    border: none;      /* 버튼 테두리 없앰 */
-    padding: 0;        /* 버튼 내부 여백 없앰 */
-    cursor: pointer;   /* 손가락 모양 */
-    font-size: 20px;   /* 혹시 글자 크기 안 맞을 때 맞추기 */
-    line-height: 1;    /* 세로 높이 딱 맞춤 */
-    vertical-align: middle;
-    font-weight: normal;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;              /* 이미지 정렬 */
+    align-items: center;        /* 수직 가운데 정렬 */
+    justify-content: center;    /* 수평 가운데 정렬 */
   }
   
-  .menu-item:hover {
-    color: #1a202c;
+  .menu-item img {
+    height: 15px;               /* 원하는 크기로 조절 */
+    object-fit: contain;
+    transition: filter 0.2s ease;
+  }
+  
+  .menu-item:hover img {
+    transform: scale(1.08);    /* hover 시 밝게 효과 */
   }
   
 

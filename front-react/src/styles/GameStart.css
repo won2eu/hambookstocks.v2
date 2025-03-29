@@ -1,5 +1,6 @@
 
 .game-start-container {
+    background-color: #1F2532;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -18,7 +19,7 @@
   }
   
   .news-section {
-    background-color: #f9f9f9;
+    background-color: #1F2532;
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -57,7 +58,7 @@
   
   
   .rank-slider-section {
-    background-color: #f9f9f9;
+    background-color: #1F2532;
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -73,7 +74,7 @@
   
 /* 여기서부터는 채팅 css 영역입니다!!!! */
   .chat-section {
-    background: #1f1f23;
+    background-color: #1F2532;
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
